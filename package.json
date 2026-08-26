@@ -1,0 +1,30 @@
+{
+  "name": "bookshelf-api",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/georgianabostan/Bookshelf-API#readme",
+  "bugs": {
+    "url": "https://github.com/georgianabostan/Bookshelf-API/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/georgianabostan/Bookshelf-API.git"
+  },
+  "license": "MIT",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server",
+    "dev": "node --watch --env-file=.env src/server.ts"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.23.1"
+  }
+}
