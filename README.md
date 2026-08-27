@@ -18,3 +18,12 @@ inlocuieste "type" cu  "type": "module",
 - npm install --save @types/express
 
 - npm install dotenv
+
+//jwt
+- npm install --save-dev @types/jsonwebtoken @types/bcryptjs
+
+- npm i winston
+
+- npm i bcryptjs
+
+- npm i jsonwebtoken

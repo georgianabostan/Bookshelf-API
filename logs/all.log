@@ -1,0 +1,15 @@
+2026-08-27 19:32:21:3221 [32minfo[39m: [32mUser succeddfully registered: {[39m
+[32m  "id": "1787848341159",[39m
+[32m  "email": "test@test.com",[39m
+[32m  "password": "$2b$10$DPZ/zB3tFPbyjYDPGImT8.EWGSKb8PnMRys2k609lVZvsF4v3Eyy6",[39m
+[32m  "role": "user",[39m
+[32m  "createdAt": "2026-08-27T16:32:21.159Z"[39m
+[32m}[39m
+2026-08-27 19:38:51:3851 [31merror[39m: [31m400: Invalid credentials[39m
+2026-08-27 19:39:05:395 [32minfo[39m: [32mUser succeddfully registered: {[39m
+[32m  "id": "1787848745773",[39m
+[32m  "email": "test@test.com",[39m
+[32m  "password": "$2b$10$pGCdy9JcT1uolmgTHHDRKONOuNg2PJO119dQ.xBKnsTRPffr1IETO",[39m
+[32m  "role": "user",[39m
+[32m  "createdAt": "2026-08-27T16:39:05.773Z"[39m
+[32m}[39m
