@@ -1,6 +1,7 @@
-import { Router, Request, Response } from 'express';
-import { authenticateJWT } from '../middleware/authMiddleware';
-import { authorizeRole } from '../middleware/roleMiddleware';
+// routes/protectedRoutes
+import { Router, type Request, type Response } from 'express';
+import { authenticateJWT } from '../middleware/authMiddleware.ts';
+import { authorizeRole } from '../middleware/roleMiddleware.ts';
 
 const router = Router();
 

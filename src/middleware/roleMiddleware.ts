@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction } from 'express'
+// middleware/roleMiddleware
+import { type Request, type Response, type NextFunction } from 'express'
 
 export const authorizeRole = (role: string) => {
     return (req: Request, res: Response, next: NextFunction) => {

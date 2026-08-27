@@ -1,3 +1,4 @@
+//schemas/User
 export interface User {
     id: string,
     email: string,
@@ -5,5 +6,3 @@ export interface User {
     role: string
     createdAt: Date
 }
-
-export const users: User[] = []

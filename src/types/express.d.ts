@@ -1,9 +1,11 @@
-import { UserPayload } from '../utils/jwt'; // Import your User type
+import type { UserPayload } from '../utils/jwt.ts';
 
 declare global {
-  namespace Express {
-    interface Request {
-      user?: UserPayload; // Add user property to Request
+    namespace Express {
+        interface Request {
+            user?: UserPayload;
+        }
     }
-  }
 }
+
+export {}

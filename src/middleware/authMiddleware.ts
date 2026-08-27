@@ -1,23 +1,31 @@
-import { type Request, type Response, NextFunction } from 'express'
-import { verifyToken } from '../utils/jwt'
-import Logger from '../libs/logger'
+// middleware/authMiddleware
+import { type Request, type Response, type NextFunction } from 'express'
+import { verifyToken } from '../utils/jwt.ts'
+import Logger from '../libs/logger.ts'
 
 export const authenticateJWT = (
     req: Request,
     res: Response,
     next: NextFunction
 ) => {
+
     const token = req.headers.authorization?.split(' ')[1]
 
-    if(!token){
-        return res.status(401).json({message: 'Access denied. No token provided.'})
+    if (!token) {
+        return res.status(401).json({
+            message: 'Access denied. No token provided.'
+        })
     }
 
-    try{
-        req.user = verifyToken(token) // Attach user info to request
+    try {
+        req.user = verifyToken(token)
+
         next()
-    } catch (error){
+    } catch (error) {
         Logger.error(error)
-        res.status(403).json({message: 'Invalid or expired token'})
+
+        return res.status(403).json({
+            message: 'Invalid or expired token'
+        })
     }
 }
