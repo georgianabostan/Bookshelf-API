@@ -6,8 +6,7 @@ export const registerSchema = z.object({
         .email('Invalid email address'),
 
     password: z
-        .string()
-        .min(6, 'Password must contain at least 6 characters'),
+        .enum(['user', 'admin']),
 
     role: z
         .string()

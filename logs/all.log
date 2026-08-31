@@ -25,3 +25,18 @@
 2026-08-31 20:01:33:133 [31merror[39m: [31mInvalid credentials[39m
 2026-08-31 20:01:42:142 [31merror[39m: [31mEmail already in use[39m
 2026-08-31 20:01:53:153 [32minfo[39m: [32mUser successfully registered: test@test4.com[39m
+2026-09-01 00:10:11:1011 [31merror[39m: [31mCannot read properties of undefined (reading 'userId')[39m
+2026-09-01 00:11:07:117 [31merror[39m: [31mCannot read properties of undefined (reading 'userId')[39m
+2026-09-01 00:28:41:2841 [31merror[39m: [31mcolumn "userid" does not exist[39m
+2026-09-01 00:29:18:2918 [31merror[39m: [31mcolumn "userid" does not exist[39m
+2026-09-01 00:30:03:303 [31merror[39m: [31mcolumn "userid" does not exist[39m
+2026-09-01 00:30:44:3044 [31merror[39m: [31mcolumn "userid" does not exist[39m
+2026-09-01 00:31:28:3128 [31merror[39m: [31mcolumn "userid" does not exist[39m
+2026-09-01 00:31:37:3137 [31merror[39m: [31mcolumn "userid" does not exist[39m
+2026-09-01 00:31:55:3155 [31merror[39m: [31mcolumn "userid" does not exist[39m
+2026-09-01 00:31:58:3158 [31merror[39m: [31mcolumn "userid" does not exist[39m
+2026-09-01 00:32:06:326 [31merror[39m: [31mcolumn "userid" does not exist[39m
+2026-09-01 00:32:25:3225 [31merror[39m: [31mCannot read properties of undefined (reading 'id')[39m
+2026-09-01 00:32:25:3225 [31merror[39m: [31mCannot read properties of undefined (reading 'id')[39m
+2026-09-01 00:32:26:3226 [31merror[39m: [31mCannot read properties of undefined (reading 'id')[39m
+2026-09-01 00:36:04:364 [32minfo[39m: [32mBook successfully added: Carrie[39m
