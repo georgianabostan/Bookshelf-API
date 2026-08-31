@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import { Pool } from 'pg'
 
+// definesc cum arata
 const requiredEnvVars = [
     'POSTGRES_HOST',
     'POSTGRES_PORT',
@@ -9,16 +10,17 @@ const requiredEnvVars = [
     'POSTGRES_PASSWORD'
 ]
 
+// verific daca sunt toate definite
 const missingEnvVars = requiredEnvVars.filter(
     envVar => !process.env[envVar]
 )
-
 if (missingEnvVars.length > 0) {
     throw new Error(
         `Missing required environment variables: ${missingEnvVars.join(', ')}`
     )
 }
 
+// creez conexiunea
 const pool = new Pool({
     host: process.env.POSTGRES_HOST,
     port: Number(process.env.POSTGRES_PORT),

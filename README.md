@@ -27,3 +27,5 @@ inlocuieste "type" cu  "type": "module",
 - npm i bcryptjs
 
 - npm i jsonwebtoken
+
+- npm install zod

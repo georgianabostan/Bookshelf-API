@@ -1,13 +1,10 @@
-// middleware/authMiddleware
-import { type Request, type Response, type NextFunction } from 'express'
+import {type Request, type Response, type NextFunction} from 'express'
 import { verifyToken } from '../utils/jwt.ts'
 import Logger from '../libs/logger.ts'
 
-export const authenticateJWT = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+// verificam JWT
+
+export const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
 
     const token = req.headers.authorization?.split(' ')[1]
 
@@ -18,12 +15,13 @@ export const authenticateJWT = (
     }
 
     try {
+
         req.user = verifyToken(token)
-
         next()
-    } catch (error) {
-        Logger.error(error)
 
+    } catch (error) {
+
+        Logger.error(error)
         return res.status(403).json({
             message: 'Invalid or expired token'
         })
