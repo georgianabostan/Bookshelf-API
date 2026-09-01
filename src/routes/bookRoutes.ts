@@ -1,9 +1,10 @@
 import { Router } from 'express'
 import { authenticateJWT } from '../middleware/authMiddleware.ts'
 
-import {add, filter, deleteId, update} from '../controllers/booksController.ts'
+import {add, filter, deleteId, update, uploadCover} from '../controllers/booksController.ts'
 import {validate} from '../middleware/validateMiddleware.ts'
 import {addBookSchema, getBooksSchema, deleteBooksSchema, updateBooksSchema} from '../schemas/booksSchemas.ts'
+import {upload} from '../middleware/uploadMiddleware.ts'
 
 const router = Router()
 
@@ -21,11 +22,8 @@ router.delete('/books/:id', authenticateJWT, validate(deleteBooksSchema, "params
 // PATCH /books/:id
 router.patch('/books/:id', authenticateJWT, validate(updateBooksSchema, "params"), update)
 // and query
+
+// POST /books/:id/cover
+router.post('/books/:id/cover', authenticateJWT, upload.single('image'), uploadCover)
+
 export default router
-
-/*
-
-PATCH  /books/:id          # e.g. change status or rating
-POST   /books/:id/cover
-
-*/

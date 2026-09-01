@@ -1,5 +1,5 @@
 import type {Request, Response} from 'express'
-import {addBook, getListBooks, deleteBook, updateBook} from '../services/bookService.ts'
+import {addBook, getListBooks, deleteBook, updateBook, updateBookCover} from '../services/bookService.ts'
 import Logger from '../libs/logger.ts'
 
 
@@ -125,6 +125,49 @@ export const update = async (req: Request, res: Response) => {
         // returneaza raspunsul
         return res.status(200).json({
             message: 'Book successfully update'
+        })
+
+    } catch (error) {
+
+        Logger.error(error)
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        })
+    }
+    
+}
+
+// update book cover
+export const uploadCover = async (req: Request, res: Response) => {
+    
+    try {
+        // citeste req.params, adica citeste datele din url (e dat direct ca cale)
+        const { id } = req.params
+        
+        // luam id-ul user-ului
+        const userId = req.user!.userId
+
+        if (!req.file) {
+            return res.status(400).json({
+                message: 'Cover image is required'
+            })
+        }
+
+        // trimite datele catre serviciu
+        const book = await updateBookCover(userId, id as string, req.file)
+
+        if (book === 'Book does not exist') {
+            return res.status(404).json({
+                message: 'Book does not exist'
+            })
+        }
+
+        Logger.info(`Book cover successfully uploaded: ${id}`)
+        
+        // returneaza raspunsul
+        return res.status(200).json({
+            message: 'Book successfully update cover'
         })
 
     } catch (error) {

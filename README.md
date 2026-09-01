@@ -29,3 +29,9 @@ inlocuieste "type" cu  "type": "module",
 - npm i jsonwebtoken
 
 - npm install zod
+
+npm install multer
+npm install -D @types/multer
+
+npm install @supabase/supabase-js multer
+npm install -D @types/multer

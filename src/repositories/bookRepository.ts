@@ -125,8 +125,6 @@ export const deleteBooksById = async (userId: string, id: string): Promise<Book 
 // update book
 export const updateBookbyStatusAndRating = async (userId: string, id: string, status?: string, rating?: number): Promise<Book[] | undefined> => {
     
-    console.log(status)
-    console.log(rating)
     if(status && rating){
         const result = await pool.query(
         `UPDATE books SET status = $3, rating = $4 WHERE  id_user = $1 AND id = $2
@@ -134,7 +132,6 @@ export const updateBookbyStatusAndRating = async (userId: string, id: string, st
         [userId, id, status, rating]
         )
 
-        console.log("1:" + result)
         if (result.rows.length === 0) {
             return undefined
         }
@@ -159,7 +156,6 @@ export const updateBookbyStatusAndRating = async (userId: string, id: string, st
         [userId, id, status]
         )
 
-        console.log("2:" + result)
         if (result.rows.length === 0) {
             return undefined
         }
@@ -183,7 +179,6 @@ export const updateBookbyStatusAndRating = async (userId: string, id: string, st
             [userId, id, rating]
             )
 
-            console.log("3:" + result)
             if (result.rows.length === 0) {
                 return undefined
             }
@@ -200,6 +195,31 @@ export const updateBookbyStatusAndRating = async (userId: string, id: string, st
 
             return books
     }
-    console.log("4:")
+    
     return undefined
+}
+
+// update book cover
+export const updateBookOnCover = async (userId: string, id: string, cover_url: string): Promise<Book | undefined> => {
+
+    const result = await pool.query(
+        `UPDATE books SET cover_url = $3 WHERE id_user = $1 AND id = $2
+        RETURNING id, id_user, title, author, status, rating, cover_url `,
+        [userId, id, cover_url])
+
+    if (result.rows.length === 0) {
+        return undefined
+    }
+
+    const row = result.rows[0]
+
+    return {
+        id: row.id,
+        id_user: row.id_user,
+        title: row.title,
+        author: row.author,
+        status: row.status,
+        rating: row.rating,
+        cover_url: row.cover_url
+    }
 }

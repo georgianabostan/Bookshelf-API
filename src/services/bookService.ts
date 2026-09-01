@@ -1,4 +1,5 @@
-import {createBook, findBookByTitleAndAuthor, getBooksByStatus, deleteBooksById, updateBookbyStatusAndRating} from '../repositories/bookRepository.ts'
+import {createBook, findBookByTitleAndAuthor, getBooksByStatus, deleteBooksById, updateBookbyStatusAndRating, updateBookOnCover} from '../repositories/bookRepository.ts'
+import supabase from '../config/supabase.ts'
 
 // add book
 export const addBook = async (userId: string, title: string, author: string, status: string, rating: number, cover_url: string) => {
@@ -38,10 +39,38 @@ export const deleteBook = async (userId: string, id: string) => {
 // update book
 export const updateBook = async (userId: string, id: string, status?: string, rating?: number) => {
 
-    console.log("Service: " + status + " " + rating)
     const book = await updateBookbyStatusAndRating(userId, id, status, rating)
 
-    console.log("gata service")
+    if(book === undefined){
+        return 'Book does not exist'
+    }
+    
+    return book
+}
+
+// update book cover
+export const updateBookCover = async (userId: string, id: string, file: Express.Multer.File) => {
+
+    const fileExtension = file.originalname.split('.').pop()
+    
+    const fileName = `${id}-${Date.now()}.${fileExtension}`
+    
+    const { error } = await supabase.storage
+        .from('book-covers')
+        .upload(fileName, file.buffer, {
+            contentType: file.mimetype
+        }) // pune imagina in bucket
+     
+    if (error) {
+        throw error
+    }
+
+    const { data } = supabase.storage
+        .from('book-covers')
+        .getPublicUrl(fileName) //obtine url-ul imaginii
+
+    const book = await updateBookOnCover(userId, id, data.publicUrl)
+
     if(book === undefined){
         return 'Book does not exist'
     }

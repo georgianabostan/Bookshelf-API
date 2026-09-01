@@ -19,11 +19,13 @@
     "dev": "node --watch --env-file=.env src/server.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.4",
     "@types/express": "^5.0.6",
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+    "multer": "^2.3.0",
     "pg": "^8.23.0",
     "winston": "^3.19.0",
     "zod": "^4.5.4"
@@ -31,6 +33,7 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.2.0",
     "@types/pg": "^8.23.1"
   }
 }

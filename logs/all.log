@@ -89,3 +89,5 @@
 2026-09-01 14:34:45:3445 [31merror[39m: [31minvalid input syntax for type boolean: "done"[39m
 2026-09-01 14:37:41:3741 [32minfo[39m: [32mBook successfully update: Book does not exist[39m
 2026-09-01 14:39:23:3923 [32minfo[39m: [32mBook successfully update: [object Object][39m
+2026-09-01 21:14:25:1425 [31merror[39m: [31mnew row violates row-level security policy[39m
+2026-09-01 21:29:54:2954 [32minfo[39m: [32mBook cover successfully uploaded: 444cf422-a049-44be-b3e9-599fc4dd619e[39m
