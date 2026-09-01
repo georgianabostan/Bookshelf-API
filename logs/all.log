@@ -62,3 +62,9 @@
 2026-09-01 11:30:00:300 [32minfo[39m: [32mBooks successfully taken: undefined[39m
 2026-09-01 11:30:14:3014 [32minfo[39m: [32mBooks successfully taken: done[39m
 2026-09-01 11:30:22:3022 [32minfo[39m: [32mBooks successfully taken: reading[39m
+2026-09-01 13:42:13:4213 [31merror[39m: [31mjwt malformed[39m
+2026-09-01 13:42:13:4213 [31merror[39m: [31mInvalid token[39m
+2026-09-01 13:42:29:4229 [32minfo[39m: [32mBook successfully delete: 8fbef81f-bbd0-4cbc-ad66-5dd23924cb24[39m
+2026-09-01 13:42:51:4251 [31merror[39m: [31mjwt expired[39m
+2026-09-01 13:42:51:4251 [31merror[39m: [31mInvalid token[39m
+2026-09-01 13:42:58:4258 [32minfo[39m: [32mBook successfully added: Sa ucizi o pasare cantatoare[39m

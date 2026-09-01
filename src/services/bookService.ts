@@ -1,4 +1,4 @@
-import {createBook, findBookByTitleAndAuthor, getBooksByStatus} from '../repositories/bookRepository.ts'
+import {createBook, findBookByTitleAndAuthor, getBooksByStatus, deleteBooksById} from '../repositories/bookRepository.ts'
 
 // add book
 export const addBook = async (userId: string, title: string, author: string, status: string, rating: number, cover_url: string) => {
@@ -27,3 +27,10 @@ export const getListBooks = async (userId: string, status?: string) => {
     return listBooks
 }
 
+// delete book
+export const deleteBook = async (userId: string, id: string) => {
+
+    const book = await deleteBooksById(userId, id)
+    
+    return book
+}

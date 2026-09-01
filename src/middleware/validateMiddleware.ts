@@ -3,14 +3,17 @@ import type { ZodSchema } from 'zod'
 
 export const validate = (
     schema: ZodSchema,
-    source: 'body' | 'query' = 'body'
+    source: 'body' | 'query' | 'params' = 'body'
 ) => {
 
     return (req: Request, res: Response, next: NextFunction) => {
 
-        const data = source === 'body'
-            ? req.body
-            : req.query
+        const data =
+            source === 'body'
+                ? req.body
+                : source === 'query'
+                    ? req.query
+                    : req.params
 
         const result = schema.safeParse(data)
 

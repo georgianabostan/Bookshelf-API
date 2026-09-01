@@ -48,7 +48,7 @@ export const findBookByTitleAndAuthor = async (userId: string, title: string, au
     }
 }
 
-// get books by status
+// get books (by status?)
 export const getBooksByStatus = async (userId: string, status?: string): Promise<Book[] | undefined> => {
 
     if(status){
@@ -94,4 +94,30 @@ export const getBooksByStatus = async (userId: string, status?: string): Promise
     }))
 
    return books
+}
+
+// delete book 
+export const deleteBooksById = async (userId: string, id: string): Promise<Book | undefined> => {
+
+    const result = await pool.query(
+        `DELETE FROM books WHERE  id_user = $1 AND id = $2
+        RETURNING id, id_user, title, author, status, rating, cover_url`,
+        [userId, id]
+    )
+
+    if (result.rows.length === 0) {
+        return undefined
+    }
+
+    const row = result.rows[0]
+
+    return {
+        id: row.id,
+        id_user: row.id_user,
+        title: row.title,
+        author: row.author,
+        status: row.status,
+        rating: row.rating,
+        cover_url: row.cover_url
+    }
 }

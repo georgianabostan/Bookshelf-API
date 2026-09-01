@@ -1,5 +1,5 @@
 import type {Request, Response} from 'express'
-import {addBook, getListBooks} from '../services/bookService.ts'
+import {addBook, getListBooks, deleteBook} from '../services/bookService.ts'
 import Logger from '../libs/logger.ts'
 
 
@@ -61,6 +61,37 @@ export const filter = async (req: Request, res: Response) => {
         return res.status(200).json({
             message: 'Book successfully taken',
             listBooks
+        })
+
+    } catch (error) {
+
+        Logger.error(error)
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        })
+    }
+    
+}
+
+// delete book
+export const deleteId = async (req: Request, res: Response) => {
+
+    try {
+        // citeste req.params, adica citeste datele din url (e dat direct ca cale)
+        const { id } = req.params
+
+        // luam id-ul user-ului
+        const userId = req.user!.userId
+
+        // trimite datele catre serviciu
+        const listBooks = await deleteBook(userId, id as string)
+
+        Logger.info(`Book successfully delete: ${id}`)
+
+        // returneaza raspunsul
+        return res.status(200).json({
+            message: 'Book successfully delete'
         })
 
     } catch (error) {

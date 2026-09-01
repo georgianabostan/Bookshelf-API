@@ -22,9 +22,13 @@ export const addBookSchema = z.object({
         .optional()
 })
 
-export const GetBooksSchema = z.object({
+export const getBooksSchema = z.object({
     status: z
         .enum(['want', 'reading', 'done']).optional()
 })
 
+export const deleteBooksSchema = z.object({
+    id: z
+        .string().uuid()
+})
 // title, author, status, rating, cover_URL
