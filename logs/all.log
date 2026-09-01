@@ -40,3 +40,25 @@
 2026-09-01 00:32:25:3225 [31merror[39m: [31mCannot read properties of undefined (reading 'id')[39m
 2026-09-01 00:32:26:3226 [31merror[39m: [31mCannot read properties of undefined (reading 'id')[39m
 2026-09-01 00:36:04:364 [32minfo[39m: [32mBook successfully added: Carrie[39m
+2026-09-01 10:41:04:414 [31merror[39m: [31minvalid token[39m
+2026-09-01 10:41:04:414 [31merror[39m: [31mInvalid token[39m
+2026-09-01 10:41:28:4128 [32minfo[39m: [32mBook successfully added: Jurnalul[39m
+2026-09-01 10:42:53:4253 [32minfo[39m: [32mBook successfully added: Dolores Claiborne[39m
+2026-09-01 10:43:57:4357 [32minfo[39m: [32mBook successfully added: Fantoma de la opera[39m
+2026-09-01 10:44:46:4446 [32minfo[39m: [32mBook successfully added: Fram, ursul polar[39m
+2026-09-01 10:46:34:4634 [32minfo[39m: [32mBook successfully added: Sa ucizi o pasare cantatoare[39m
+2026-09-01 10:47:49:4749 [32minfo[39m: [32mBooks successfully taken: done[39m
+2026-09-01 10:50:46:5046 [32minfo[39m: [32mBooks successfully taken: done[39m
+2026-09-01 10:51:19:5119 [32minfo[39m: [32mBooks successfully taken: done[39m
+2026-09-01 10:51:39:5139 [32minfo[39m: [32mBooks successfully taken: reading[39m
+2026-09-01 10:52:52:5252 [32minfo[39m: [32mBooks successfully taken: reading[39m
+2026-09-01 10:55:00:550 [32minfo[39m: [32mBooks successfully taken: reading[39m
+2026-09-01 11:00:28:028 [32minfo[39m: [32mBooks successfully taken: reading[39m
+2026-09-01 11:02:02:22 [32minfo[39m: [32mBooks successfully taken: reading[39m
+2026-09-01 11:12:35:1235 [32minfo[39m: [32mBooks successfully taken: reading[39m
+2026-09-01 11:13:03:133 [31merror[39m: [31mBook already existed[39m
+2026-09-01 11:13:08:138 [32minfo[39m: [32mBooks successfully taken: reading[39m
+2026-09-01 11:14:06:146 [31merror[39m: [31mBook already existed[39m
+2026-09-01 11:30:00:300 [32minfo[39m: [32mBooks successfully taken: undefined[39m
+2026-09-01 11:30:14:3014 [32minfo[39m: [32mBooks successfully taken: done[39m
+2026-09-01 11:30:22:3022 [32minfo[39m: [32mBooks successfully taken: reading[39m

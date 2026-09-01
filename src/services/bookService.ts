@@ -1,4 +1,4 @@
-import {createBook, findBookByTitleAndAuthor} from '../repositories/bookRepository.ts'
+import {createBook, findBookByTitleAndAuthor, getBooksByStatus} from '../repositories/bookRepository.ts'
 
 // add book
 export const addBook = async (userId: string, title: string, author: string, status: string, rating: number, cover_url: string) => {
@@ -13,5 +13,17 @@ export const addBook = async (userId: string, title: string, author: string, sta
     const book = await createBook(userId, title, author, status, rating, cover_url)
 
     return book
+}
+
+// get books filter
+export const getListBooks = async (userId: string, status?: string) => {
+
+    const listBooks = await getBooksByStatus(userId, status)
+
+    if(listBooks === undefined){
+        return 'The list is empty'
+    }
+    
+    return listBooks
 }
 

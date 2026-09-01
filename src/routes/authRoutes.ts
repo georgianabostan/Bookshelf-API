@@ -7,8 +7,8 @@ import {registerSchema,loginSchema} from '../schemas/authSchemas.ts'
 const router = Router()
 
 // URL + middleware + controller
-router.post('/register',validate(registerSchema),register)
-router.post('/login',validate(loginSchema),login)
+router.post('/register',validate(registerSchema, "body"),register)
+router.post('/login',validate(loginSchema, "body"),login)
 
 
 export default router

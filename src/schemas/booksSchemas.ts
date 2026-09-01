@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const booksSchema = z.object({
+export const addBookSchema = z.object({
     title: z.string(),
 
     author: z
@@ -20,6 +20,11 @@ export const booksSchema = z.object({
         .string()
         .url()
         .optional()
+})
+
+export const GetBooksSchema = z.object({
+    status: z
+        .enum(['want', 'reading', 'done']).optional()
 })
 
 // title, author, status, rating, cover_URL

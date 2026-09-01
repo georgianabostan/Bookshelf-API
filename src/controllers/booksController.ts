@@ -1,5 +1,5 @@
 import type {Request, Response} from 'express'
-import {addBook} from '../services/bookService.ts'
+import {addBook, getListBooks} from '../services/bookService.ts'
 import Logger from '../libs/logger.ts'
 
 
@@ -40,4 +40,36 @@ export const add = async (req: Request, res: Response) => {
             message: 'Internal server error'
         })
     }
+}
+
+// filter list books
+export const filter = async (req: Request, res: Response) => {
+
+    try {
+        // citeste req.query, adica citeste datele din url
+        const {status} = req.query
+
+        // luam id-ul user-ului
+        const userId = req.user!.userId
+
+        // trimite datele catre serviciu
+        const listBooks = await getListBooks(userId, status as string | undefined)
+
+        Logger.info(`Books successfully taken: ${status}`)
+
+        // returneaza raspunsul
+        return res.status(200).json({
+            message: 'Book successfully taken',
+            listBooks
+        })
+
+    } catch (error) {
+
+        Logger.error(error)
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        })
+    }
+    
 }
