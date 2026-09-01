@@ -31,4 +31,20 @@ export const deleteBooksSchema = z.object({
     id: z
         .string().uuid()
 })
+
+export const updateBooksSchema = z.object({
+    id: z
+        .string().uuid(),
+    status: z
+        .enum(['want', 'reading', 'done'])
+        .optional(),
+
+    rating: z
+        .number()
+        .int()
+        .min(0)
+        .max(5)
+        .default(0)
+        .optional()
+})
 // title, author, status, rating, cover_URL

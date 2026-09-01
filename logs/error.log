@@ -29,3 +29,10 @@
 2026-09-01 13:42:13:4213 [31merror[39m: [31mInvalid token[39m
 2026-09-01 13:42:51:4251 [31merror[39m: [31mjwt expired[39m
 2026-09-01 13:42:51:4251 [31merror[39m: [31mInvalid token[39m
+2026-09-01 14:10:05:105 [31merror[39m: [31mjwt malformed[39m
+2026-09-01 14:10:05:105 [31merror[39m: [31mInvalid token[39m
+2026-09-01 14:10:18:1018 [31merror[39m: [31mjwt malformed[39m
+2026-09-01 14:10:18:1018 [31merror[39m: [31mInvalid token[39m
+2026-09-01 14:33:25:3325 [31merror[39m: [31minvalid input syntax for type boolean: "done"[39m
+2026-09-01 14:34:13:3413 [31merror[39m: [31minvalid input syntax for type boolean: "done"[39m
+2026-09-01 14:34:45:3445 [31merror[39m: [31minvalid input syntax for type boolean: "done"[39m

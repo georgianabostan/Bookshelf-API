@@ -1,4 +1,4 @@
-import {createBook, findBookByTitleAndAuthor, getBooksByStatus, deleteBooksById} from '../repositories/bookRepository.ts'
+import {createBook, findBookByTitleAndAuthor, getBooksByStatus, deleteBooksById, updateBookbyStatusAndRating} from '../repositories/bookRepository.ts'
 
 // add book
 export const addBook = async (userId: string, title: string, author: string, status: string, rating: number, cover_url: string) => {
@@ -34,3 +34,18 @@ export const deleteBook = async (userId: string, id: string) => {
     
     return book
 }
+
+// update book
+export const updateBook = async (userId: string, id: string, status?: string, rating?: number) => {
+
+    console.log("Service: " + status + " " + rating)
+    const book = await updateBookbyStatusAndRating(userId, id, status, rating)
+
+    console.log("gata service")
+    if(book === undefined){
+        return 'Book does not exist'
+    }
+    
+    return book
+}
+ 

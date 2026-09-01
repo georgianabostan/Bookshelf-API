@@ -68,3 +68,24 @@
 2026-09-01 13:42:51:4251 [31merror[39m: [31mjwt expired[39m
 2026-09-01 13:42:51:4251 [31merror[39m: [31mInvalid token[39m
 2026-09-01 13:42:58:4258 [32minfo[39m: [32mBook successfully added: Sa ucizi o pasare cantatoare[39m
+2026-09-01 14:10:05:105 [31merror[39m: [31mjwt malformed[39m
+2026-09-01 14:10:05:105 [31merror[39m: [31mInvalid token[39m
+2026-09-01 14:10:18:1018 [31merror[39m: [31mjwt malformed[39m
+2026-09-01 14:10:18:1018 [31merror[39m: [31mInvalid token[39m
+2026-09-01 14:11:49:1149 [32minfo[39m: [32mBook successfully update: db665f5c-0a70-4ea7-97e5-a956904298c8[39m
+2026-09-01 14:13:24:1324 [32minfo[39m: [32mBook successfully update: db665f5c-0a70-4ea7-97e5-a956904298c8[39m
+2026-09-01 14:13:27:1327 [32minfo[39m: [32mBook successfully update: db665f5c-0a70-4ea7-97e5-a956904298c8[39m
+2026-09-01 14:24:46:2446 [32minfo[39m: [32mBook successfully update: db665f5c-0a70-4ea7-97e5-a956904298c8[39m
+2026-09-01 14:24:48:2448 [32minfo[39m: [32mBook successfully update: db665f5c-0a70-4ea7-97e5-a956904298c8[39m
+2026-09-01 14:25:59:2559 [32minfo[39m: [32mBook successfully update: db665f5c-0a70-4ea7-97e5-a956904298c8[39m
+2026-09-01 14:26:05:265 [32minfo[39m: [32mBook successfully update: db665f5c-0a70-4ea7-97e5-a956904298c8[39m
+2026-09-01 14:26:28:2628 [32minfo[39m: [32mBook successfully update: db665f5c-0a70-4ea7-97e5-a956904298c8[39m
+2026-09-01 14:26:57:2657 [32minfo[39m: [32mBook successfully update: db665f5c-0a70-4ea7-97e5-a956904298c8[39m
+2026-09-01 14:27:22:2722 [32minfo[39m: [32mBook successfully update: db665f5c-0a70-4ea7-97e5-a956904298c8[39m
+2026-09-01 14:27:25:2725 [32minfo[39m: [32mBook successfully update: db665f5c-0a70-4ea7-97e5-a956904298c8[39m
+2026-09-01 14:31:13:3113 [32minfo[39m: [32mBook successfully update: db665f5c-0a70-4ea7-97e5-a956904298c8[39m
+2026-09-01 14:33:25:3325 [31merror[39m: [31minvalid input syntax for type boolean: "done"[39m
+2026-09-01 14:34:13:3413 [31merror[39m: [31minvalid input syntax for type boolean: "done"[39m
+2026-09-01 14:34:45:3445 [31merror[39m: [31minvalid input syntax for type boolean: "done"[39m
+2026-09-01 14:37:41:3741 [32minfo[39m: [32mBook successfully update: Book does not exist[39m
+2026-09-01 14:39:23:3923 [32minfo[39m: [32mBook successfully update: [object Object][39m
