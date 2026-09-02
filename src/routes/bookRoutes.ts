@@ -1,29 +1,32 @@
 import { Router } from 'express'
 import { authenticateJWT } from '../middleware/authMiddleware.ts'
 
-import {add, filter, deleteId, update, uploadCover} from '../controllers/booksController.ts'
+import { createBooksController } from '../controllers/booksController.ts'
 import {validate} from '../middleware/validateMiddleware.ts'
-import {addBookSchema, getBooksSchema, deleteBooksSchema, updateBooksSchema} from '../schemas/booksSchemas.ts'
+import {addBookSchema, getBooksSchema, deleteBooksSchema, updateBookParamsSchema, updateBookBodySchema } from '../schemas/booksSchemas.ts'
 import {upload} from '../middleware/uploadMiddleware.ts'
 
-const router = Router()
+export const createBooksRoutes = (booksController: ReturnType<typeof createBooksController>) => {
 
-// URL + middleware + controller
+    const router = Router()
 
-// POST /books
-router.post('/books', authenticateJWT, validate(addBookSchema, "body"), add)
+    // URL + middleware + controller
 
-// GET /books (by status?)
-router.get('/books', authenticateJWT, validate(getBooksSchema, "query"), filter)
+    // POST /books
+    router.post('/books', authenticateJWT, validate(addBookSchema, "body"), booksController.add)
 
-// DELETE /books/:id
-router.delete('/books/:id', authenticateJWT, validate(deleteBooksSchema, "params"), deleteId)
+    // GET /books (by status?)
+    router.get('/books', authenticateJWT, validate(getBooksSchema, "query"), booksController.filter)
 
-// PATCH /books/:id
-router.patch('/books/:id', authenticateJWT, validate(updateBooksSchema, "params"), update)
-// and query
+    // DELETE /books/:id
+    router.delete('/books/:id', authenticateJWT, validate(deleteBooksSchema, "params"), booksController.deleteId)
 
-// POST /books/:id/cover
-router.post('/books/:id/cover', authenticateJWT, upload.single('image'), uploadCover)
+    // PATCH /books/:id
+    router.patch('/books/:id', authenticateJWT, validate(updateBookParamsSchema, "params"), validate(updateBookBodySchema, 'body'), booksController.update)
+    // and query
 
-export default router
+    // POST /books/:id/cover
+    router.post('/books/:id/cover', authenticateJWT, upload.single('image'), booksController.uploadCover)
+
+    return router
+}

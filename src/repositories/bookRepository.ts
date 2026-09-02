@@ -1,67 +1,29 @@
-import pool from '../config/postgres.ts'
+import { Pool } from 'pg'
 import type { Book } from '../types/Book.ts'
 
-// create book
-export const createBook = async (userId: string, title: string, author: string, status: string, rating: number, cover_url: string): Promise<Book> => {
+export const createBookRepository = (pool: Pool) => ({
 
-    const result = await pool.query(
-        `INSERT INTO books (id_user, title, author, status, rating, cover_url) VALUES ($1, $2, $3, $4, $5, $6)
-        RETURNING id, id_user, title, author, status, rating, cover_url`,
-        [userId, title, author, status, rating, cover_url]
-    )
+    // create book
+    async createBook(
+        userId: string,
+        title: string,
+        author: string,
+        status: string,
+        rating: number,
+        cover_url?: string
+    ): Promise<Book> {
 
-    const row = result.rows[0]
-
-    return {
-        id: row.id,
-        id_user: row.id_user,
-        title: row.title,
-        author: row.author,
-        status: row.status,
-        rating: row.rating,
-        cover_url: row.cover_url
-    }
-}
-
-// find book
-export const findBookByTitleAndAuthor = async (userId: string, title: string, author: string): Promise<Book | undefined> => {
-
-    const result = await pool.query(
-        `SELECT id, id_user, title, author, status, rating, cover_url FROM books WHERE  id_user = $1 AND title = $2 AND author = $3`,
-        [userId, title, author]
-    )
-
-    if (result.rows.length === 0) {
-        return undefined
-    }
-
-    const row = result.rows[0]
-
-    return {
-        id: row.id,
-        id_user: row.id_user,
-        title: row.title,
-        author: row.author,
-        status: row.status,
-        rating: row.rating,
-        cover_url: row.cover_url
-    }
-}
-
-// get books (by status?)
-export const getBooksByStatus = async (userId: string, status?: string): Promise<Book[] | undefined> => {
-
-    if(status){
         const result = await pool.query(
-        `SELECT id, id_user, title, author, status, rating, cover_url FROM books WHERE  id_user = $1 AND status = $2`,
-        [userId, status]
+            `INSERT INTO books
+                (id_user, title, author, status, rating, cover_url)
+             VALUES ($1, $2, $3, $4, $5, $6)
+             RETURNING id, id_user, title, author, status, rating, cover_url`,
+            [userId, title, author, status, rating, cover_url]
         )
 
-        if (result.rows.length === 0) {
-            return undefined
-        }
+        const row = result.rows[0]
 
-        const books: Book[] = result.rows.map((row) => ({
+        return {
             id: row.id,
             id_user: row.id_user,
             title: row.title,
@@ -69,74 +31,30 @@ export const getBooksByStatus = async (userId: string, status?: string): Promise
             status: row.status,
             rating: row.rating,
             cover_url: row.cover_url
-        }))
+        }
+    },
 
-        return books
-    }
+    // find book by title and author
+    async findBookByTitleAndAuthor(
+        userId: string,
+        title: string,
+        author: string
+    ): Promise<Book | undefined> {
 
-    const result = await pool.query(
-        `SELECT id, id_user, title, author, status, rating, cover_url FROM books WHERE  id_user = $1`,
-        [userId]
-    )
-
-    if (result.rows.length === 0) {
-        return undefined
-    }
-
-    const books: Book[] = result.rows.map((row) => ({
-        id: row.id,
-        id_user: row.id_user,
-        title: row.title,
-        author: row.author,
-        status: row.status,
-        rating: row.rating,
-        cover_url: row.cover_url
-    }))
-
-   return books
-}
-
-// delete book 
-export const deleteBooksById = async (userId: string, id: string): Promise<Book | undefined> => {
-
-    const result = await pool.query(
-        `DELETE FROM books WHERE  id_user = $1 AND id = $2
-        RETURNING id, id_user, title, author, status, rating, cover_url`,
-        [userId, id]
-    )
-
-    if (result.rows.length === 0) {
-        return undefined
-    }
-
-    const row = result.rows[0]
-
-    return {
-        id: row.id,
-        id_user: row.id_user,
-        title: row.title,
-        author: row.author,
-        status: row.status,
-        rating: row.rating,
-        cover_url: row.cover_url
-    }
-}
-
-// update book
-export const updateBookbyStatusAndRating = async (userId: string, id: string, status?: string, rating?: number): Promise<Book[] | undefined> => {
-    
-    if(status && rating){
         const result = await pool.query(
-        `UPDATE books SET status = $3, rating = $4 WHERE  id_user = $1 AND id = $2
-        RETURNING id, id_user, title, author, status, rating, cover_url `,
-        [userId, id, status, rating]
+            `SELECT id, id_user, title, author, status, rating, cover_url
+             FROM books
+             WHERE id_user = $1 AND title = $2 AND author = $3`,
+            [userId, title, author]
         )
 
         if (result.rows.length === 0) {
             return undefined
         }
 
-        const books: Book[] = result.rows.map((row) => ({
+        const row = result.rows[0]
+
+        return {
             id: row.id,
             id_user: row.id_user,
             title: row.title,
@@ -144,39 +62,21 @@ export const updateBookbyStatusAndRating = async (userId: string, id: string, st
             status: row.status,
             rating: row.rating,
             cover_url: row.cover_url
-        }))
-
-        return books
-
-    } else if(status){
-
-        const result = await pool.query(
-        `UPDATE books SET status = $3 WHERE id_user = $1 AND id = $2
-        RETURNING id, id_user, title, author, status, rating, cover_url `,
-        [userId, id, status]
-        )
-
-        if (result.rows.length === 0) {
-            return undefined
         }
+    },
 
-        const books: Book[] = result.rows.map((row) => ({
-            id: row.id,
-            id_user: row.id_user,
-            title: row.title,
-            author: row.author,
-            status: row.status,
-            rating: row.rating,
-            cover_url: row.cover_url
-        }))
+    // get books by status
+    async getBooksByStatus(
+        userId: string,
+        status?: string
+    ): Promise<Book[] | undefined> {
 
-        return books
-    } else if(rating){
-
-        const result = await pool.query(
-            `UPDATE books SET rating = $3 WHERE  id_user = $1 AND id = $2
-            RETURNING id, id_user, title, author, status, rating, cover_url `,
-            [userId, id, rating]
+        if (status) {
+            const result = await pool.query(
+                `SELECT id, id_user, title, author, status, rating, cover_url
+                 FROM books
+                 WHERE id_user = $1 AND status = $2`,
+                [userId, status]
             )
 
             if (result.rows.length === 0) {
@@ -194,32 +94,181 @@ export const updateBookbyStatusAndRating = async (userId: string, id: string, st
             }))
 
             return books
-    }
-    
-    return undefined
-}
+        }
 
-// update book cover
-export const updateBookOnCover = async (userId: string, id: string, cover_url: string): Promise<Book | undefined> => {
+        const result = await pool.query(
+            `SELECT id, id_user, title, author, status, rating, cover_url
+             FROM books
+             WHERE id_user = $1`,
+            [userId]
+        )
 
-    const result = await pool.query(
-        `UPDATE books SET cover_url = $3 WHERE id_user = $1 AND id = $2
-        RETURNING id, id_user, title, author, status, rating, cover_url `,
-        [userId, id, cover_url])
+        if (result.rows.length === 0) {
+            return undefined
+        }
 
-    if (result.rows.length === 0) {
+        const books: Book[] = result.rows.map((row) => ({
+            id: row.id,
+            id_user: row.id_user,
+            title: row.title,
+            author: row.author,
+            status: row.status,
+            rating: row.rating,
+            cover_url: row.cover_url
+        }))
+
+        return books
+    },
+
+    // delete book
+    async deleteBooksById(
+        userId: string,
+        id: string
+    ): Promise<Book | undefined> {
+
+        const result = await pool.query(
+            `DELETE FROM books
+             WHERE id_user = $1 AND id = $2
+             RETURNING id, id_user, title, author, status, rating, cover_url`,
+            [userId, id]
+        )
+
+        if (result.rows.length === 0) {
+            return undefined
+        }
+
+        const row = result.rows[0]
+
+        return {
+            id: row.id,
+            id_user: row.id_user,
+            title: row.title,
+            author: row.author,
+            status: row.status,
+            rating: row.rating,
+            cover_url: row.cover_url
+        }
+    },
+
+    // update book status and/or rating
+    async updateBookbyStatusAndRating(
+        userId: string,
+        id: string,
+        status?: string,
+        rating?: number
+    ): Promise<Book | undefined> {
+
+        if (status !== undefined && rating !== undefined) {
+            const result = await pool.query(
+                `UPDATE books
+                 SET status = $3, rating = $4
+                 WHERE id_user = $1 AND id = $2
+                 RETURNING id, id_user, title, author, status, rating, cover_url`,
+                [userId, id, status, rating]
+            )
+
+            if (result.rows.length === 0) {
+                return undefined
+            }
+
+            const row = result.rows[0]
+
+            return {
+                id: row.id,
+                id_user: row.id_user,
+                title: row.title,
+                author: row.author,
+                status: row.status,
+                rating: row.rating,
+                cover_url: row.cover_url
+            }
+        }
+
+        if (status !== undefined) {
+            const result = await pool.query(
+                `UPDATE books
+                 SET status = $3
+                 WHERE id_user = $1 AND id = $2
+                 RETURNING id, id_user, title, author, status, rating, cover_url`,
+                [userId, id, status]
+            )
+
+            if (result.rows.length === 0) {
+                return undefined
+            }
+
+            const row = result.rows[0]
+
+            return {
+                id: row.id,
+                id_user: row.id_user,
+                title: row.title,
+                author: row.author,
+                status: row.status,
+                rating: row.rating,
+                cover_url: row.cover_url
+            }
+        }
+
+        if (rating !== undefined) {
+            const result = await pool.query(
+                `UPDATE books
+                 SET rating = $3
+                 WHERE id_user = $1 AND id = $2
+                 RETURNING id, id_user, title, author, status, rating, cover_url`,
+                [userId, id, rating]
+            )
+
+            if (result.rows.length === 0) {
+                return undefined
+            }
+
+            const row = result.rows[0]
+
+            return {
+                id: row.id,
+                id_user: row.id_user,
+                title: row.title,
+                author: row.author,
+                status: row.status,
+                rating: row.rating,
+                cover_url: row.cover_url
+            }
+        }
+
         return undefined
-    }
+    },
 
-    const row = result.rows[0]
+    // update book cover
+    async updateBookOnCover(
+        userId: string,
+        id: string,
+        cover_url: string
+    ): Promise<Book | undefined> {
 
-    return {
-        id: row.id,
-        id_user: row.id_user,
-        title: row.title,
-        author: row.author,
-        status: row.status,
-        rating: row.rating,
-        cover_url: row.cover_url
+        const result = await pool.query(
+            `UPDATE books
+             SET cover_url = $3
+             WHERE id_user = $1 AND id = $2
+             RETURNING id, id_user, title, author, status, rating, cover_url`,
+            [userId, id, cover_url]
+        )
+
+        if (result.rows.length === 0) {
+            return undefined
+        }
+
+        const row = result.rows[0]
+
+        return {
+            id: row.id,
+            id_user: row.id_user,
+            title: row.title,
+            author: row.author,
+            status: row.status,
+            rating: row.rating,
+            cover_url: row.cover_url
+        }
     }
-}
+})
+

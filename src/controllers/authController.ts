@@ -1,69 +1,83 @@
-import type {Request, Response} from 'express'
-import {registerUser, loginUser} from '../services/authService.ts'
-import {generateToken} from '../utils/jwt.ts'
+import type { Request, Response } from 'express'
+import type { createUserService } from '../services/authService.ts'
+import { generateToken } from '../utils/jwt.ts'
 import Logger from '../libs/logger.ts'
 
+export const createAuthController = (
+    authService: ReturnType<typeof createUserService>
+) => ({
 
-// register
-export const register = async (req: Request, res: Response) => {
+    register: async (req: Request, res: Response) => {
 
-    try {
-        // citeste req.body, adica citeste datele
-        const {email, password, role} = req.body
+        try {
 
-        // trimite datele catre serviciu
-        await registerUser(email, password, role)
+            const { email, password, role } = req.body
 
-        Logger.info(`User successfully registered: ${email}`)
+            await authService.registerUser(
+                email,
+                password,
+                role
+            )
 
-        // returneaza raspunsul
-        return res.status(201).json({
-            message: 'User registered successfully'
-        })
+            Logger.info(`User successfully registered: ${email}`)
 
-    } catch (error) {
+            return res.status(201).json({
+                message: 'User registered successfully'
+            })
 
-        Logger.error(error)
+        } catch (error) {
 
-        if (
-            error instanceof Error &&
-            error.message === 'Email already in use'
-        ) {
-            return res.status(400).json({
-                message: 'Email already in use'
+            Logger.error(error)
+
+            if (
+                error instanceof Error &&
+                error.message === 'Email already in use'
+            ) {
+                return res.status(400).json({
+                    message: 'Email already in use'
+                })
+            }
+
+            return res.status(500).json({
+                message: 'Internal server error'
             })
         }
+    },
 
-        return res.status(500).json({
-            message: 'Internal server error'
-        })
-    }
-}
+    login: async (req: Request, res: Response) => {
 
-// login
-export const login = async (req: Request, res: Response) => {
+        try {
 
-    try {
-        const {email, password} = req.body
+            const { email, password } = req.body
 
-        const user = await loginUser(email, password)
+            const user = await authService.loginUser(
+                email,
+                password
+            )
 
-        const token = generateToken({userId: user.id, role: user.role})
+            const token = generateToken({
+                userId: user.id,
+                role: user.role
+            })
 
-        return res.json({token})
+            return res.json({ token })
 
-    } catch (error) {
+        } catch (error) {
 
-        Logger.error(error)
+            Logger.error(error)
 
-        if (error instanceof Error && error.message === 'Invalid credentials') {
-            return res.status(401).json({
-                message: 'Invalid credentials'
+            if (
+                error instanceof Error &&
+                error.message === 'Invalid credentials'
+            ) {
+                return res.status(401).json({
+                    message: 'Invalid credentials'
+                })
+            }
+
+            return res.status(500).json({
+                message: 'Internal server error'
             })
         }
-
-        return res.status(500).json({
-            message: 'Internal server error'
-        })
     }
-}
+})

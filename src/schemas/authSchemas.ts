@@ -6,11 +6,13 @@ export const registerSchema = z.object({
         .email('Invalid email address'),
 
     password: z
-        .enum(['user', 'admin']),
+        .string()
+        .min(6, 'Password must contain at least 6 characters'),
 
     role: z
-        .string()
-        .min(1, 'Role is required')
+        .enum(['user', 'admin'])
+        .default('user')
+        
 })
 
 export const loginSchema = z.object({

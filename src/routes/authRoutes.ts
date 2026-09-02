@@ -1,14 +1,16 @@
 import { Router } from 'express'
-
-import {register, login} from '../controllers/authController.ts'
 import {validate} from '../middleware/validateMiddleware.ts'
+import type { createAuthController } from '../controllers/authController.ts'
 import {registerSchema,loginSchema} from '../schemas/authSchemas.ts'
 
-const router = Router()
+export const createAuthRoutes = (authController: ReturnType<typeof createAuthController>) => {
 
-// URL + middleware + controller
-router.post('/register',validate(registerSchema, "body"),register)
-router.post('/login',validate(loginSchema, "body"),login)
+    const router = Router()
+
+    // URL + middleware + controller
+    router.post('/register',validate(registerSchema, "body"),authController.register)
+    router.post('/login',validate(loginSchema, "body"),authController.login)
 
 
-export default router
+    return router
+}

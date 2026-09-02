@@ -1,0 +1,1246 @@
+config/postgres.ts:
+import 'dotenv/config'
+import { Pool } from 'pg'
+
+// definesc cum arata
+const requiredEnvVars = [
+    'POSTGRES_HOST',
+    'POSTGRES_PORT',
+    'POSTGRES_DATABASE',
+    'POSTGRES_USER',
+    'POSTGRES_PASSWORD'
+]
+
+// verific daca sunt toate definite
+const missingEnvVars = requiredEnvVars.filter(
+    envVar => !process.env[envVar]
+)
+if (missingEnvVars.length > 0) {
+    throw new Error(
+        `Missing required environment variables: ${missingEnvVars.join(', ')}`
+    )
+}
+
+// creez conexiunea
+const pool = new Pool({
+    host: process.env.POSTGRES_HOST,
+    port: Number(process.env.POSTGRES_PORT),
+    user: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DATABASE
+})
+
+pool.on('error', (error) => {
+    console.error('Unexpected PostgreSQL pool error:', error)
+})
+
+export default pool
+
+config/supabase:
+import 'dotenv/config'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SECRET_KEY!
+)
+
+export default supabase
+
+controllers/authController:
+import type {Request, Response} from 'express'
+import {registerUser, loginUser} from '../services/authService.ts'
+import {generateToken} from '../utils/jwt.ts'
+import Logger from '../libs/logger.ts'
+
+
+// register
+export const register = async (req: Request, res: Response) => {
+
+    try {
+        // citeste req.body, adica citeste datele
+        const {email, password, role} = req.body
+
+        // trimite datele catre serviciu
+        await registerUser(email, password, role)
+
+        Logger.info(`User successfully registered: ${email}`)
+
+        // returneaza raspunsul
+        return res.status(201).json({
+            message: 'User registered successfully'
+        })
+
+    } catch (error) {
+
+        Logger.error(error)
+
+        if (
+            error instanceof Error &&
+            error.message === 'Email already in use'
+        ) {
+            return res.status(400).json({
+                message: 'Email already in use'
+            })
+        }
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        })
+    }
+}
+
+// login
+export const login = async (req: Request, res: Response) => {
+
+    try {
+        const {email, password} = req.body
+
+        const user = await loginUser(email, password)
+
+        const token = generateToken({userId: user.id, role: user.role})
+
+        return res.json({token})
+
+    } catch (error) {
+
+        Logger.error(error)
+
+        if (error instanceof Error && error.message === 'Invalid credentials') {
+            return res.status(401).json({
+                message: 'Invalid credentials'
+            })
+        }
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        })
+    }
+}
+
+controllers/booksController:
+import type {Request, Response} from 'express'
+import {addBook, getListBooks, deleteBook, updateBook, updateBookCover} from '../services/bookService.ts'
+import Logger from '../libs/logger.ts'
+
+
+// add Book
+export const add = async (req: Request, res: Response) => {
+
+    try {
+        // citeste req.body, adica citeste datele
+        const {title, author, status, rating, cover_URL} = req.body
+
+        // luam id-ul user-ului
+        const userId = req.user!.userId
+
+        // trimite datele catre serviciu
+        await addBook(userId, title, author, status, rating, cover_URL)
+
+        Logger.info(`Book successfully added: ${title}`)
+
+        // returneaza raspunsul
+        return res.status(201).json({
+            message: 'Book successfully added'
+        })
+
+    } catch (error) {
+
+        Logger.error(error)
+
+        if (
+            error instanceof Error &&
+            error.message === 'Book already existed'
+        ) {
+            return res.status(400).json({
+                message: 'Book already existed'
+            })
+        }
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        })
+    }
+}
+
+// filter list books
+export const filter = async (req: Request, res: Response) => {
+
+    try {
+        // citeste req.query, adica citeste datele din url
+        const {status} = req.query
+
+        // luam id-ul user-ului
+        const userId = req.user!.userId
+
+        // trimite datele catre serviciu
+        const listBooks = await getListBooks(userId, status as string | undefined)
+
+        Logger.info(`Books successfully taken: ${status}`)
+
+        // returneaza raspunsul
+        return res.status(200).json({
+            message: 'Book successfully taken',
+            listBooks
+        })
+
+    } catch (error) {
+
+        Logger.error(error)
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        })
+    }
+    
+}
+
+// delete book
+export const deleteId = async (req: Request, res: Response) => {
+
+    try {
+        // citeste req.params, adica citeste datele din url (e dat direct ca cale)
+        const { id } = req.params
+
+        // luam id-ul user-ului
+        const userId = req.user!.userId
+
+        // trimite datele catre serviciu
+        const listBooks = await deleteBook(userId, id as string)
+
+        Logger.info(`Book successfully delete: ${listBooks}`)
+
+        // returneaza raspunsul
+        return res.status(200).json({
+            message: 'Book successfully delete'
+        })
+
+    } catch (error) {
+
+        Logger.error(error)
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        })
+    }
+    
+}
+
+// update book
+export const update = async (req: Request, res: Response) => {
+
+    try {
+        // citeste req.params, adica citeste datele din url (e dat direct ca cale)
+        const { id } = req.params
+
+        const {status, rating} = req.body
+        
+        // luam id-ul user-ului
+        const userId = req.user!.userId
+
+        // trimite datele catre serviciu
+        const listBooks = await updateBook(userId, id as string, status as string, rating as number)
+
+        Logger.info(`Book successfully update: ${listBooks}`)
+
+        // returneaza raspunsul
+        return res.status(200).json({
+            message: 'Book successfully update'
+        })
+
+    } catch (error) {
+
+        Logger.error(error)
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        })
+    }
+    
+}
+
+// update book cover
+export const uploadCover = async (req: Request, res: Response) => {
+    
+    try {
+        // citeste req.params, adica citeste datele din url (e dat direct ca cale)
+        const { id } = req.params
+        
+        // luam id-ul user-ului
+        const userId = req.user!.userId
+
+        if (!req.file) {
+            return res.status(400).json({
+                message: 'Cover image is required'
+            })
+        }
+
+        // trimite datele catre serviciu
+        const book = await updateBookCover(userId, id as string, req.file)
+
+        if (book === 'Book does not exist') {
+            return res.status(404).json({
+                message: 'Book does not exist'
+            })
+        }
+
+        Logger.info(`Book cover successfully uploaded: ${id}`)
+        
+        // returneaza raspunsul
+        return res.status(200).json({
+            message: 'Book successfully update cover'
+        })
+
+    } catch (error) {
+
+        Logger.error(error)
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        })
+    }
+    
+}
+
+
+libs/logger:
+import winston from 'winston';
+
+// Define your severity levels.
+// With them, You can create log files,
+// see or hide levels based on the running ENV.
+const levels = {
+  error: 0,
+  warn: 1,
+  info: 2,
+  http: 3,
+  debug: 4,
+};
+
+// This method set the current severity based on
+// the current NODE_ENV: show all the log levels
+// if the server was run in development mode; otherwise,
+// if it was run in production, show only warn and error messages.
+const level = () => {
+  const env = process.env.NODE_ENV || 'development';
+  const isDevelopment = env === 'development';
+  return isDevelopment ? 'debug' : 'warn';
+};
+
+// Define different colors for each level.
+// Colors make the log message more visible,
+// adding the ability to focus or ignore messages.
+const colors = {
+  error: 'red',
+  warn: 'yellow',
+  info: 'green',
+  http: 'magenta',
+  debug: 'white',
+};
+
+// Tell winston that you want to link the colors
+// defined above to the severity levels.
+winston.addColors(colors);
+
+// Chose the aspect of your log customizing the log format.
+const format = winston.format.combine(
+  // Add the message timestamp with the preferred format
+  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
+  // Tell Winston that the logs must be colored
+  winston.format.colorize({ all: true }),
+  // Define the format of the message showing the timestamp, the level and the message
+  winston.format.printf(
+    (info) => `${info.timestamp} ${info.level}: ${info.message}`,
+  ),
+);
+
+// Define which transports the logger must use to print out messages.
+// In this example, we are using three different transports
+const transports = [
+  // Allow the use the console to print the messages
+  new winston.transports.Console(),
+  // Allow to print all the error level messages inside the error.log file
+  new winston.transports.File({
+    filename: 'logs/error.log',
+    level: 'error',
+  }),
+  // Allow to print all the error message inside the all.log file
+  // (also the error log that are also printed inside the error.log(
+  new winston.transports.File({ filename: 'logs/all.log' }),
+];
+
+// Create the logger instance that has to be exported
+// and used to log messages.
+const Logger = winston.createLogger({
+  level: level(),
+  levels,
+  format,
+  transports,
+});
+
+export default Logger;
+
+
+middleware/authMiddleware
+import {type Request, type Response, type NextFunction, application} from 'express'
+import { verifyToken } from '../utils/jwt.ts'
+import Logger from '../libs/logger.ts'
+
+// verificam JWT
+
+export const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
+
+    const token = req.headers.authorization?.split(' ')[1]
+
+    if (!token) {
+        return res.status(401).json({
+            message: 'Access denied. No token provided.'
+        })
+    }
+
+    try {
+
+        req.user = verifyToken(token)
+        next()
+
+    } catch (error) {
+
+        Logger.error(error)
+        return res.status(403).json({
+            message: 'Invalid or expired token'
+        })
+    }
+}
+
+middleware/errorMiddleware
+import type {Request, Response, NextFunction} from 'express'
+
+import Logger from '../libs/logger.ts'
+
+export const errorHandler = (error: unknown,req: Request,res: Response,next: NextFunction) => {
+
+    Logger.error(error)
+
+    if (res.headersSent) {
+        return next(error)
+    }
+
+    return res.status(500).json({
+        message: 'Internal server error'
+    })
+}
+
+middleware/roleMiddleware
+import {type Request,type Response,type NextFunction} from 'express'
+
+export const authorizeRole = (role: string) => {
+
+    return (req: Request, res: Response, next: NextFunction) => {
+
+        const user = req.user
+
+        if (!user || user.role !== role) {
+            return res.status(403).json({
+                message:
+                    'Access denied. You do not have the right permissions.'
+            })
+        }
+
+        next()
+    }
+}
+
+middleware/uploadMiddleware
+import multer from 'multer'
+
+const storage = multer.memoryStorage() //ca sa salvam in RAM
+
+export const upload = multer({
+    storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024
+    },
+    fileFilter: (req, file, cb) => {
+
+        if (!file.mimetype.startsWith('image/')) {
+            return cb(new Error('Only images are allowed'))
+        }
+
+        cb(null, true)
+    }
+})
+
+middleware/validateMiddleware
+import type { Request, Response, NextFunction } from 'express'
+import type { ZodSchema } from 'zod'
+
+export const validate = (
+    schema: ZodSchema,
+    source: 'body' | 'query' | 'params' = 'body'
+) => {
+
+    return (req: Request, res: Response, next: NextFunction) => {
+
+        const data =
+            source === 'body'
+                ? req.body
+                : source === 'query'
+                    ? req.query
+                    : req.params
+
+        const result = schema.safeParse(data)
+
+        if (!result.success) {
+            return res.status(400).json({
+                message: 'Validation failed',
+                errors: result.error.issues.map(issue => ({
+                    field: issue.path.join('.'),
+                    message: issue.message
+                }))
+            })
+        }
+
+        if (source === 'body') {
+            req.body = result.data
+        }
+
+        next()
+    }
+}
+
+
+repository/bookRepository:
+ import { Pool } from 'pg'
+import type { Book } from '../types/Book.ts'
+
+export const createBookRepository = (pool: Pool) => ({
+
+    // create book
+    async createBook(
+        userId: string,
+        title: string,
+        author: string,
+        status: string,
+        rating: number,
+        cover_url: string
+    ): Promise<Book> {
+
+        const result = await pool.query(
+            `INSERT INTO books
+                (id_user, title, author, status, rating, cover_url)
+             VALUES ($1, $2, $3, $4, $5, $6)
+             RETURNING id, id_user, title, author, status, rating, cover_url`,
+            [userId, title, author, status, rating, cover_url]
+        )
+
+        const row = result.rows[0]
+
+        return {
+            id: row.id,
+            id_user: row.id_user,
+            title: row.title,
+            author: row.author,
+            status: row.status,
+            rating: row.rating,
+            cover_url: row.cover_url
+        }
+    },
+
+    // find book by title and author
+    async findBookByTitleAndAuthor(
+        userId: string,
+        title: string,
+        author: string
+    ): Promise<Book | undefined> {
+
+        const result = await pool.query(
+            `SELECT id, id_user, title, author, status, rating, cover_url
+             FROM books
+             WHERE id_user = $1 AND title = $2 AND author = $3`,
+            [userId, title, author]
+        )
+
+        if (result.rows.length === 0) {
+            return undefined
+        }
+
+        const row = result.rows[0]
+
+        return {
+            id: row.id,
+            id_user: row.id_user,
+            title: row.title,
+            author: row.author,
+            status: row.status,
+            rating: row.rating,
+            cover_url: row.cover_url
+        }
+    },
+
+    // get books by status
+    async getBooksByStatus(
+        userId: string,
+        status?: string
+    ): Promise<Book[] | undefined> {
+
+        if (status) {
+            const result = await pool.query(
+                `SELECT id, id_user, title, author, status, rating, cover_url
+                 FROM books
+                 WHERE id_user = $1 AND status = $2`,
+                [userId, status]
+            )
+
+            if (result.rows.length === 0) {
+                return undefined
+            }
+
+            const books: Book[] = result.rows.map((row) => ({
+                id: row.id,
+                id_user: row.id_user,
+                title: row.title,
+                author: row.author,
+                status: row.status,
+                rating: row.rating,
+                cover_url: row.cover_url
+            }))
+
+            return books
+        }
+
+        const result = await pool.query(
+            `SELECT id, id_user, title, author, status, rating, cover_url
+             FROM books
+             WHERE id_user = $1`,
+            [userId]
+        )
+
+        if (result.rows.length === 0) {
+            return undefined
+        }
+
+        const books: Book[] = result.rows.map((row) => ({
+            id: row.id,
+            id_user: row.id_user,
+            title: row.title,
+            author: row.author,
+            status: row.status,
+            rating: row.rating,
+            cover_url: row.cover_url
+        }))
+
+        return books
+    },
+
+    // delete book
+    async deleteBooksById(
+        userId: string,
+        id: string
+    ): Promise<Book | undefined> {
+
+        const result = await pool.query(
+            `DELETE FROM books
+             WHERE id_user = $1 AND id = $2
+             RETURNING id, id_user, title, author, status, rating, cover_url`,
+            [userId, id]
+        )
+
+        if (result.rows.length === 0) {
+            return undefined
+        }
+
+        const row = result.rows[0]
+
+        return {
+            id: row.id,
+            id_user: row.id_user,
+            title: row.title,
+            author: row.author,
+            status: row.status,
+            rating: row.rating,
+            cover_url: row.cover_url
+        }
+    },
+
+    // update book status and/or rating
+    async updateBookbyStatusAndRating(
+        userId: string,
+        id: string,
+        status?: string,
+        rating?: number
+    ): Promise<Book | undefined> {
+
+        if (status !== undefined && rating !== undefined) {
+            const result = await pool.query(
+                `UPDATE books
+                 SET status = $3, rating = $4
+                 WHERE id_user = $1 AND id = $2
+                 RETURNING id, id_user, title, author, status, rating, cover_url`,
+                [userId, id, status, rating]
+            )
+
+            if (result.rows.length === 0) {
+                return undefined
+            }
+
+            const row = result.rows[0]
+
+            return {
+                id: row.id,
+                id_user: row.id_user,
+                title: row.title,
+                author: row.author,
+                status: row.status,
+                rating: row.rating,
+                cover_url: row.cover_url
+            }
+        }
+
+        if (status !== undefined) {
+            const result = await pool.query(
+                `UPDATE books
+                 SET status = $3
+                 WHERE id_user = $1 AND id = $2
+                 RETURNING id, id_user, title, author, status, rating, cover_url`,
+                [userId, id, status]
+            )
+
+            if (result.rows.length === 0) {
+                return undefined
+            }
+
+            const row = result.rows[0]
+
+            return {
+                id: row.id,
+                id_user: row.id_user,
+                title: row.title,
+                author: row.author,
+                status: row.status,
+                rating: row.rating,
+                cover_url: row.cover_url
+            }
+        }
+
+        if (rating !== undefined) {
+            const result = await pool.query(
+                `UPDATE books
+                 SET rating = $3
+                 WHERE id_user = $1 AND id = $2
+                 RETURNING id, id_user, title, author, status, rating, cover_url`,
+                [userId, id, rating]
+            )
+
+            if (result.rows.length === 0) {
+                return undefined
+            }
+
+            const row = result.rows[0]
+
+            return {
+                id: row.id,
+                id_user: row.id_user,
+                title: row.title,
+                author: row.author,
+                status: row.status,
+                rating: row.rating,
+                cover_url: row.cover_url
+            }
+        }
+
+        return undefined
+    },
+
+    // update book cover
+    async updateBookOnCover(
+        userId: string,
+        id: string,
+        cover_url: string
+    ): Promise<Book | undefined> {
+
+        const result = await pool.query(
+            `UPDATE books
+             SET cover_url = $3
+             WHERE id_user = $1 AND id = $2
+             RETURNING id, id_user, title, author, status, rating, cover_url`,
+            [userId, id, cover_url]
+        )
+
+        if (result.rows.length === 0) {
+            return undefined
+        }
+
+        const row = result.rows[0]
+
+        return {
+            id: row.id,
+            id_user: row.id_user,
+            title: row.title,
+            author: row.author,
+            status: row.status,
+            rating: row.rating,
+            cover_url: row.cover_url
+        }
+    }
+})
+
+
+
+repository/userRepository
+import { Pool } from "pg"
+import type { User } from '../types/User.ts'
+
+export const createUserRepository = (pool: Pool) => ({ 
+    async createUser (email: string, password: string, role: string): Promise<User>{
+
+        const result = await pool.query(
+            `INSERT INTO users (email, password, role) VALUES ($1, $2, $3)
+            RETURNING id, email, password, role, created_at`,
+            [email, password, role]
+        )
+
+        const row = result.rows[0]
+
+        return {
+            id: row.id,
+            email: row.email,
+            password: row.password,
+            role: row.role,
+            createdAt: row.created_at
+        }
+    },
+
+    async findUserByEmail (email: string): Promise<User | undefined> {
+
+        const result = await pool.query(
+            `SELECT id, email, password, role, created_at
+            FROM users
+            WHERE email = $1`,
+            [email]
+        )
+
+        if (result.rows.length === 0) {
+            return undefined
+        }
+
+        const row = result.rows[0]
+
+        return {
+            id: row.id,
+            email: row.email,
+            password: row.password,
+            role: row.role,
+            createdAt: row.created_at
+        }
+    }
+})
+
+routes/authRoutes
+import { Router } from 'express'
+
+import {register, login} from '../controllers/authController.ts'
+import {validate} from '../middleware/validateMiddleware.ts'
+import {registerSchema,loginSchema} from '../schemas/authSchemas.ts'
+
+const router = Router()
+
+// URL + middleware + controller
+router.post('/register',validate(registerSchema, "body"),register)
+router.post('/login',validate(loginSchema, "body"),login)
+
+
+export default router
+
+routes/bookRoutes
+import { Router } from 'express'
+import { authenticateJWT } from '../middleware/authMiddleware.ts'
+
+import {add, filter, deleteId, update, uploadCover} from '../controllers/booksController.ts'
+import {validate} from '../middleware/validateMiddleware.ts'
+import {addBookSchema, getBooksSchema, deleteBooksSchema, updateBooksSchema} from '../schemas/booksSchemas.ts'
+import {upload} from '../middleware/uploadMiddleware.ts'
+
+const router = Router()
+
+// URL + middleware + controller
+
+// POST /books
+router.post('/books', authenticateJWT, validate(addBookSchema, "body"), add)
+
+// GET /books (by status?)
+router.get('/books', authenticateJWT, validate(getBooksSchema, "query"), filter)
+
+// DELETE /books/:id
+router.delete('/books/:id', authenticateJWT, validate(deleteBooksSchema, "params"), deleteId)
+
+// PATCH /books/:id
+router.patch('/books/:id', authenticateJWT, validate(updateBooksSchema, "params"), update)
+// and query
+
+// POST /books/:id/cover
+router.post('/books/:id/cover', authenticateJWT, upload.single('image'), uploadCover)
+
+export default router
+
+
+routes/protectedRoutes
+import { Router, type Request, type Response } from 'express'
+
+import {authenticateJWT} from '../middleware/authMiddleware.ts'
+import {authorizeRole} from '../middleware/roleMiddleware.ts'
+
+const router = Router()
+
+// URL + middleware + controller
+router.get('/profile',authenticateJWT,(req: Request,res: Response) => {
+    res.json({
+        message:'This is a protected user profile route',
+        user: req.user
+    })
+})
+
+router.get('/admin',authenticateJWT,authorizeRole('admin'),(req: Request,res: Response) => {
+    res.json({
+        message:'Welcome, admin. This is a protected admin route',
+        user: req.user
+    })
+})
+
+export default router
+
+
+schemas/authSchemas
+import { jwt, z } from 'zod'
+
+export const registerSchema = z.object({
+    email: z
+        .string()
+        .email('Invalid email address'),
+
+    password: z
+        .enum(['user', 'admin']),
+
+    role: z
+        .string()
+        .min(1, 'Role is required')
+})
+
+export const loginSchema = z.object({
+    email: z
+        .string()
+        .email('Invalid email address'),
+
+    password: z
+        .string()
+        .min(1, 'Password is required')
+})
+
+schemas/booksSchemas
+import { z } from 'zod'
+
+export const addBookSchema = z.object({
+    title: z.string(),
+
+    author: z
+        .string(),
+
+    status: z
+        .enum(['want', 'reading', 'done']),
+
+    rating: z
+        .number()
+        .int()
+        .min(0)
+        .max(5)
+        .default(0),
+
+    cover_URL: z
+        .string()
+        .url()
+        .optional()
+})
+
+export const getBooksSchema = z.object({
+    status: z
+        .enum(['want', 'reading', 'done']).optional()
+})
+
+export const deleteBooksSchema = z.object({
+    id: z
+        .string().uuid()
+})
+
+export const updateBooksSchema = z.object({
+    id: z
+        .string().uuid(),
+    status: z
+        .enum(['want', 'reading', 'done'])
+        .optional(),
+
+    rating: z
+        .number()
+        .int()
+        .min(0)
+        .max(5)
+        .default(0)
+        .optional()
+})
+// title, author, status, rating, cover_URL
+
+
+services/authService
+import bcrypt from 'bcryptjs'
+
+import { createUserRepository } from '../repositories/userRepository.ts'
+
+export const createUserService = (userRepository: ReturnType<typeof createUserRepository>) => ({
+
+    // register
+    async registerUser (email: string, password: string, role: string) {
+
+        const existingUser = await userRepository.findUserByEmail(email)
+
+        if (existingUser) {
+            throw new Error('Email already in use')
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10)
+
+        const user = await userRepository.createUser(email, hashedPassword, role)
+
+        return user
+    },
+
+    // login
+    async loginUser (email: string, password: string) {
+
+        const user = await userRepository.findUserByEmail(email)
+
+        if (!user) {
+            throw new Error('Invalid credentials')
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password)
+
+        if (!isPasswordValid) {
+            throw new Error('Invalid credentials')
+        }
+
+        return user
+    }
+})
+
+services/bookService
+import supabase from '../config/supabase.ts'
+import { createBookRepository } from '../repositories/bookRepository.ts'
+
+export const createBookService = (bookRepository: ReturnType<typeof createBookRepository>) => ({
+
+// add book
+    async addBook (userId: string, title: string, author: string, status: string, rating: number, cover_url: string) {
+
+
+        const existingBook = await bookRepository.findBookByTitleAndAuthor(userId, title, author)
+
+        if (existingBook) {
+            throw new Error('Book already existed')
+        }
+
+        const book = await bookRepository.createBook(userId, title, author, status, rating, cover_url)
+
+        return book
+    },
+
+    // get books filter
+    async getListBooks (userId: string, status?: string) {
+
+        const listBooks = await bookRepository.getBooksByStatus(userId, status)
+
+        if(listBooks === undefined){
+            return 'The list is empty'
+        }
+        
+        return listBooks
+    },
+
+    // delete book
+    async deleteBook (userId: string, id: string){
+
+        const book = await bookRepository.deleteBooksById(userId, id)
+        
+        return book
+    },
+
+    // update book
+    async updateBook (userId: string, id: string, status?: string, rating?: number) {
+
+        const book = await bookRepository.updateBookbyStatusAndRating(userId, id, status, rating)
+
+        if(book === undefined){
+            return 'Book does not exist'
+        }
+        
+        return book
+    },
+
+    // update book cover
+    async updateBookCover (userId: string, id: string, file: Express.Multer.File) {
+
+        const fileExtension = file.originalname.split('.').pop()
+        
+        const fileName = `${id}-${Date.now()}.${fileExtension}`
+        
+        const { error } = await supabase.storage
+            .from('book-covers')
+            .upload(fileName, file.buffer, {
+                contentType: file.mimetype
+            }) // pune imagina in bucket
+        
+        if (error) {
+            throw error
+        }
+
+        const { data } = supabase.storage
+            .from('book-covers')
+            .getPublicUrl(fileName) //obtine url-ul imaginii
+
+        const book = await bookRepository.updateBookOnCover(userId, id, data.publicUrl)
+
+        if(book === undefined){
+            return 'Book does not exist'
+        }
+        
+        return book
+    }
+})
+
+types/Book
+export interface Book {
+    id: string,
+    id_user: string,
+    title: string,
+    author: string,
+    status: string,
+    rating: number,
+    cover_url: string
+}
+
+
+type/express.d.ts 
+import type { UserPayload } from '../utils/jwt.ts'
+
+declare global {
+    namespace Express {
+        interface Request {
+            user?: UserPayload
+        }
+    }
+}
+
+export {}
+
+type/User
+export interface User {
+    id: string,
+    email: string,
+    password: string,
+    role: string
+    createdAt: Date
+}
+
+utils/jwt
+// utils/jwt
+import 'dotenv/config'
+import jwt from 'jsonwebtoken'
+import Logger from '../libs/logger.ts'
+
+const SECRET_KEY = process.env.JWT_SECRET
+
+if (!SECRET_KEY) {
+    throw new Error('JWT_SECRET is not defined')
+}
+
+export interface UserPayload {
+    userId: string
+    role: string
+}
+
+// Generate a JWT
+export const generateToken = (userPayload: UserPayload) => {
+    return jwt.sign(
+        userPayload,
+        SECRET_KEY,
+        { expiresIn: '1h' }
+    )
+}
+
+// Verify a JWT
+export const verifyToken = (token: string): UserPayload => {
+    try {
+        return jwt.verify(
+            token,
+            SECRET_KEY
+        ) as UserPayload
+
+    } catch (error) {
+        Logger.error(error)
+
+        throw new Error('Invalid token')
+    }
+}
+
+app 
+import express from 'express'
+import authRoutes from './routes/authRoutes.ts'
+import booksRoutes from './routes/bookRoutes.ts'
+import protectedRoutes from './routes/protectedRoutes.ts'
+import {errorHandler} from './middleware/errorMiddleware.ts'
+
+// instanta express
+const app = express()
+
+app.use(express.json())
+
+// rutele
+app.use('/auth',authRoutes)
+
+app.use('/protected',protectedRoutes)
+
+app.use(booksRoutes)
+
+// middleware
+app.use(errorHandler)
+
+
+
+export default app
+
+server
+import 'dotenv/config'
+
+import app from './app.ts'
+import pool from './config/postgres.ts'
+
+const port = process.env.PORT || 8000
+
+const startServer = async () => {
+
+    try {
+
+        await pool.query('SELECT NOW()')
+
+        console.log('PostgreSQL connected successfully')
+
+        app.listen(port, () => {
+            console.log(`Server is running on port ${port}!`)
+        })
+
+    } catch (error) {
+
+        console.error('PostgreSQL connection failed:',  error)
+        process.exit(1)
+    }
+}
+
+startServer()
+
