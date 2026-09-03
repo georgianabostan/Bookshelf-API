@@ -27,25 +27,37 @@ export const createBooksController = (
     },
 
     // filter list books
-    async filter (req: Request, res: Response){
+    async filter (req: Request, res: Response) {
 
-        // citeste req.query, adica citeste datele din url
-        const {status} = req.query
+        const {
+            status,
+            page = 1,
+            limit = 10,
+            sort = 'title',
+            order = 'asc'
+        } = req.query
 
-        // luam id-ul user-ului
         const userId = req.user!.userId
 
-        // trimite datele catre serviciu
-        const listBooks = await bookService.getListBooks(userId, status as string | undefined)
+        const listBooks = await bookService.getListBooks(
+            userId,
+            status as string | undefined,
+            Number(page),
+            Number(limit),
+            sort as string,
+            order as string
+        )
 
         Logger.info(`Books successfully taken: ${status}`)
 
-        // returneaza raspunsul
         return res.status(200).json({
             message: 'Book successfully taken',
-            listBooks
+            listBooks,
+            pagination: {
+                page: Number(page),
+                limit: Number(limit)
+            }
         })
-        
     },
 
     // delete book

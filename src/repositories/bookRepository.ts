@@ -98,46 +98,38 @@ export const createBookRepository = (pool: Pool) => ({
     // get books by status
     async getBooksByStatus(
         userId: string,
-        status?: string
+        status?: string,
+        page: number = 1,
+        limit: number = 10,
+        sort: string = 'title',
+        order: string = 'asc'
     ): Promise<Book[] | undefined> {
 
-        if (status) {
-            const result = await pool.query(
-                `SELECT id, id_user, title, author, status, rating, cover_url
-                 FROM books
-                 WHERE id_user = $1 AND status = $2`,
-                [userId, status]
-            )
-
-            if (result.rows.length === 0) {
-                return undefined
-            }
-
-            const books: Book[] = result.rows.map((row) => ({
-                id: row.id,
-                id_user: row.id_user,
-                title: row.title,
-                author: row.author,
-                status: row.status,
-                rating: row.rating,
-                cover_url: row.cover_url
-            }))
-
-            return books
+        const offset = (page - 1) * limit
+        const allowedSortFields: Record<string, string> = {
+            title: 'title',
+            author: 'author',
+            status: 'status',
+            rating: 'rating'
         }
+        const sortColumn = allowedSortFields[sort] ?? 'title'
+        const sortOrder = order === 'desc' ? 'DESC' : 'ASC'
 
-        const result = await pool.query(
-            `SELECT id, id_user, title, author, status, rating, cover_url
-             FROM books
-             WHERE id_user = $1`,
-            [userId]
-        )
+        const query = `
+        SELECT id, id_user, title, author, status, rating, cover_url
+        FROM books
+        WHERE id_user = $1
+        ${status ? 'AND status = $2' : ''}
+        ORDER BY ${sortColumn} ${sortOrder}
+        LIMIT $${status ? 3 : 2}
+        OFFSET $${status ? 4 : 3}
+        `
 
-        if (result.rows.length === 0) {
-            return undefined
-        }
+        const params = status? [userId, status, limit, offset]: [userId, limit, offset]
 
-        const books: Book[] = result.rows.map((row) => ({
+        const result = await pool.query(query, params)
+
+        return result.rows.map((row) => ({
             id: row.id,
             id_user: row.id_user,
             title: row.title,
@@ -146,8 +138,6 @@ export const createBookRepository = (pool: Pool) => ({
             rating: row.rating,
             cover_url: row.cover_url
         }))
-
-        return books
     },
 
     // delete book

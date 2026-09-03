@@ -19,14 +19,28 @@ export const createBookService = (bookRepository: ReturnType<typeof createBookRe
     },
 
     // get books filter
-    async getListBooks (userId: string, status?: string) {
+    async getListBooks(
+        userId: string,
+        status?: string,
+        page: number = 1,
+        limit: number = 10,
+        sort: string = 'title',
+        order: string = 'asc'
+    ) {
 
-        const listBooks = await bookRepository.getBooksByStatus(userId, status)
+        const listBooks = await bookRepository.getBooksByStatus(
+            userId,
+            status,
+            page,
+            limit,
+            sort,
+            order
+        )
 
-        if(listBooks === undefined){
+        if (listBooks === undefined) {
             return []
         }
-        
+
         return listBooks
     },
 

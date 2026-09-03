@@ -24,7 +24,31 @@ export const addBookSchema = z.object({
 
 export const getBooksSchema = z.object({
     status: z
-        .enum(['want', 'reading', 'done']).optional()
+        .enum(['want', 'reading', 'done'])
+        .optional(),
+
+    page: z
+        .coerce
+        .number()
+        .int()
+        .min(1)
+        .default(1),
+
+    limit: z
+        .coerce
+        .number()
+        .int()
+        .min(1)
+        .max(100)
+        .default(10),
+
+    sort: z
+        .enum(['title', 'author', 'status', 'rating'])
+        .default('title'),
+
+    order: z
+        .enum(['asc', 'desc'])
+        .default('asc')
 })
 
 export const deleteBooksSchema = z.object({

@@ -132,3 +132,92 @@
 2026-09-03 14:56:10:5610 [31merror[39m: [31mBook does not exist[39m
 2026-09-03 14:56:10:5610 [31merror[39m: [31mBook does not exist[39m
 2026-09-03 14:56:10:5610 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 23:52:04:524 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 23:52:04:524 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 23:52:04:524 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 23:52:04:524 [31merror[39m: [31mInvalid token[39m
+2026-09-03 23:52:04:524 [31merror[39m: [31minvalid input syntax for type bigint: "NaN"[39m
+2026-09-03 23:52:05:525 [31merror[39m: [31mBook already existed[39m
+2026-09-03 23:52:05:525 [31merror[39m: [31minvalid input syntax for type bigint: "NaN"[39m
+2026-09-03 23:52:05:525 [31merror[39m: [31minvalid input syntax for type bigint: "NaN"[39m
+2026-09-03 23:52:05:525 [31merror[39m: [31minvalid input syntax for type bigint: "NaN"[39m
+2026-09-03 23:52:06:526 [31merror[39m: [31minvalid input syntax for type bigint: "NaN"[39m
+2026-09-03 23:52:06:526 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 23:52:23:5223 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 23:52:23:5223 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 23:52:23:5223 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 23:52:23:5223 [31merror[39m: [31mInvalid token[39m
+2026-09-03 23:52:24:5224 [31merror[39m: [31minvalid input syntax for type bigint: "NaN"[39m
+2026-09-03 23:52:24:5224 [31merror[39m: [31mBook already existed[39m
+2026-09-03 23:52:24:5224 [31merror[39m: [31minvalid input syntax for type bigint: "NaN"[39m
+2026-09-03 23:52:24:5224 [31merror[39m: [31minvalid input syntax for type bigint: "NaN"[39m
+2026-09-03 23:52:25:5225 [31merror[39m: [31minvalid input syntax for type bigint: "NaN"[39m
+2026-09-03 23:52:25:5225 [31merror[39m: [31minvalid input syntax for type bigint: "NaN"[39m
+2026-09-03 23:52:25:5225 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 23:53:45:5345 [31merror[39m: [31minvalid input syntax for type bigint: "NaN"[39m
+2026-09-03 23:54:05:545 [31merror[39m: [31minvalid input syntax for type bigint: "NaN"[39m
+2026-09-03 23:54:51:5451 [31merror[39m: [31minvalid input syntax for type bigint: "NaN"[39m
+2026-09-04 00:00:46:046 [31merror[39m: [31mInvalid credentials[39m
+2026-09-04 00:00:46:046 [31merror[39m: [31mInvalid credentials[39m
+2026-09-04 00:00:46:046 [31merror[39m: [31mjwt malformed[39m
+2026-09-04 00:00:46:046 [31merror[39m: [31mInvalid token[39m
+2026-09-04 00:00:47:047 [31merror[39m: [31mBook already existed[39m
+2026-09-04 00:00:48:048 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:00:50:050 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:00:50:050 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:01:43:143 [31merror[39m: [31mInvalid credentials[39m
+2026-09-04 00:01:43:143 [31merror[39m: [31mInvalid credentials[39m
+2026-09-04 00:01:43:143 [31merror[39m: [31mjwt malformed[39m
+2026-09-04 00:01:43:143 [31merror[39m: [31mInvalid token[39m
+2026-09-04 00:01:44:144 [31merror[39m: [31mBook already existed[39m
+2026-09-04 00:01:45:145 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:01:45:145 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:01:45:145 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:01:49:149 [31merror[39m: [31mjwt malformed[39m
+2026-09-04 00:01:49:149 [31merror[39m: [31mInvalid token[39m
+2026-09-04 00:01:50:150 [31merror[39m: [31mBook already existed[39m
+2026-09-04 00:01:52:152 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:01:52:152 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:01:52:152 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:16:40:1640 [31merror[39m: [31mjwt malformed[39m
+2026-09-04 00:16:40:1640 [31merror[39m: [31mInvalid token[39m
+2026-09-04 00:16:40:1640 [31merror[39m: [31mBook already existed[39m
+2026-09-04 00:16:41:1641 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:16:41:1641 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:16:41:1641 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:19:09:199 [31merror[39m: [31mjwt malformed[39m
+2026-09-04 00:19:09:199 [31merror[39m: [31mInvalid token[39m
+2026-09-04 00:19:09:199 [31merror[39m: [31mBook already existed[39m
+2026-09-04 00:19:10:1910 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:19:10:1910 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:19:10:1910 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:23:29:2329 [31merror[39m: [31mjwt malformed[39m
+2026-09-04 00:23:29:2329 [31merror[39m: [31mInvalid token[39m
+2026-09-04 00:23:30:2330 [31merror[39m: [31mBook already existed[39m
+2026-09-04 00:23:30:2330 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:23:31:2331 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:23:31:2331 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:24:07:247 [31merror[39m: [31mInvalid credentials[39m
+2026-09-04 00:24:07:247 [31merror[39m: [31mInvalid credentials[39m
+2026-09-04 00:24:07:247 [31merror[39m: [31mjwt malformed[39m
+2026-09-04 00:24:07:247 [31merror[39m: [31mInvalid token[39m
+2026-09-04 00:24:08:248 [31merror[39m: [31mBook already existed[39m
+2026-09-04 00:24:08:248 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:24:08:248 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:24:09:249 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:26:56:2656 [31merror[39m: [31mInvalid credentials[39m
+2026-09-04 00:26:56:2656 [31merror[39m: [31mInvalid credentials[39m
+2026-09-04 00:26:56:2656 [31merror[39m: [31mjwt malformed[39m
+2026-09-04 00:26:56:2656 [31merror[39m: [31mInvalid token[39m
+2026-09-04 00:26:56:2656 [31merror[39m: [31mBook already existed[39m
+2026-09-04 00:26:57:2657 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:26:57:2657 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:26:57:2657 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:27:15:2715 [31merror[39m: [31mInvalid credentials[39m
+2026-09-04 00:27:15:2715 [31merror[39m: [31mInvalid credentials[39m
+2026-09-04 00:27:15:2715 [31merror[39m: [31mjwt malformed[39m
+2026-09-04 00:27:15:2715 [31merror[39m: [31mInvalid token[39m
+2026-09-04 00:27:16:2716 [31merror[39m: [31mBook already existed[39m
+2026-09-04 00:27:16:2716 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:27:16:2716 [31merror[39m: [31mBook does not exist[39m
+2026-09-04 00:27:17:2717 [31merror[39m: [31mBook does not exist[39m

@@ -146,7 +146,15 @@ describe('BookService - Unit Tests', () => {
 
         expect(result).toEqual(books) // lista primita
 
-        expect(bookRepository.getBooksByStatus).toHaveBeenCalledWith('22222222-2222-2222-2222-222222222222',undefined)
+        expect(bookRepository.getBooksByStatus).toHaveBeenCalledWith(
+            '22222222-2222-2222-2222-222222222222',
+            undefined,
+            1,
+            10,
+            'title',
+            'asc'
+        )
+    
     })
 
     // lista carti (nu sunt carti) (repository returneaza undefined)
