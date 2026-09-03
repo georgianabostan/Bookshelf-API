@@ -16,7 +16,7 @@ export const addBookSchema = z.object({
         .max(5)
         .default(0),
 
-    cover_URL: z
+    cover_url: z
         .string()
         .url()
         .optional()
@@ -37,15 +37,13 @@ export const updateBookParamsSchema = z.object({
 })
 
 export const updateBookBodySchema = z.object({
-    status: z
-        .enum(['want', 'reading', 'done'])
-        .optional(),
-
-    rating: z
-        .number()
-        .int()
-        .min(0)
-        .max(5)
-        .optional()
-})
-// title, author, status, rating, cover_URL
+    status: z.enum(['want', 'reading', 'done']).optional(),
+    rating: z.number().int().min(0).max(5).optional()
+}).refine(
+    data => data.status !== undefined || data.rating !== undefined,
+    {
+        message: 'At least one field must be provided',
+        path: []
+    }
+)
+// title, author, status, rating, cover_url

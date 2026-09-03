@@ -7,7 +7,7 @@ export const errorHandler = (
     res: Response,
     next: NextFunction
 ) => {
-    Logger.error(error)
+    Logger.error(error instanceof Error ? error.message : error)
 
     if (res.headersSent) {
         return next(error)

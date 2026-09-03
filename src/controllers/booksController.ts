@@ -10,13 +10,13 @@ export const createBooksController = (
     async add (req: Request, res: Response){
 
         // citeste req.body, adica citeste datele
-        const {title, author, status, rating, cover_URL} = req.body
+        const {title, author, status, rating, cover_url} = req.body
 
         // luam id-ul user-ului
         const userId = req.user!.userId
 
         // trimite datele catre serviciu
-        await bookService.addBook(userId, title, author, status, rating, cover_URL)
+        await bookService.addBook(userId, title, author, status, rating, cover_url)
 
         Logger.info(`Book successfully added: ${title}`)
 

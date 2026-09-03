@@ -37,3 +37,5 @@ npm install @supabase/supabase-js multer
 npm install -D @types/multer
 
 - npm install supertest @types/supertest --save-dev
+
+- npm install -D vitest supertest @types/supertest

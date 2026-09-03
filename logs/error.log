@@ -40,3 +40,95 @@
 2026-09-02 15:41:09:419 [31merror[39m: [31mBook already existed[39m
 2026-09-02 20:48:08:488 [31merror[39m: [31mjwt expired[39m
 2026-09-02 20:48:08:488 [31merror[39m: [31mInvalid token[39m
+2026-09-03 10:38:19:3819 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:38:19:3819 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:38:19:3819 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 10:38:19:3819 [31merror[39m: [31mInvalid token[39m
+2026-09-03 10:38:36:3836 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:38:36:3836 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:38:36:3836 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 10:38:36:3836 [31merror[39m: [31mInvalid token[39m
+2026-09-03 10:40:19:4019 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:40:19:4019 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:40:19:4019 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 10:40:19:4019 [31merror[39m: [31mInvalid token[39m
+2026-09-03 10:40:53:4053 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:40:53:4053 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:40:53:4053 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 10:40:53:4053 [31merror[39m: [31mInvalid token[39m
+2026-09-03 10:41:09:419 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:41:09:419 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:41:09:419 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 10:41:09:419 [31merror[39m: [31mInvalid token[39m
+2026-09-03 10:42:25:4225 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:42:26:4226 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:42:26:4226 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 10:42:26:4226 [31merror[39m: [31mInvalid token[39m
+2026-09-03 10:42:44:4244 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:42:44:4244 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:42:44:4244 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 10:42:44:4244 [31merror[39m: [31mInvalid token[39m
+2026-09-03 10:44:50:4450 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:44:50:4450 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:44:50:4450 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 10:44:50:4450 [31merror[39m: [31mInvalid token[39m
+2026-09-03 10:44:57:4457 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:44:57:4457 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:44:57:4457 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 10:44:57:4457 [31merror[39m: [31mInvalid token[39m
+2026-09-03 10:46:07:467 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:46:07:467 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:46:07:467 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 10:46:07:467 [31merror[39m: [31mInvalid token[39m
+2026-09-03 10:47:17:4717 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:47:17:4717 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 10:47:17:4717 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 10:47:17:4717 [31merror[39m: [31mInvalid token[39m
+2026-09-03 11:05:37:537 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 11:05:37:537 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 11:05:37:537 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 11:05:37:537 [31merror[39m: [31mInvalid token[39m
+2026-09-03 11:06:02:62 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 11:06:02:62 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 11:06:02:62 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 11:06:02:62 [31merror[39m: [31mInvalid token[39m
+2026-09-03 11:07:26:726 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 11:07:26:726 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 11:07:26:726 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 11:07:26:726 [31merror[39m: [31mInvalid token[39m
+2026-09-03 11:09:01:91 [31merror[39m: [31mBook already existed[39m
+2026-09-03 11:09:01:91 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 11:09:02:92 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 11:09:02:92 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 11:23:36:2336 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 11:23:36:2336 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 11:23:36:2336 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 11:23:36:2336 [31merror[39m: [31mInvalid token[39m
+2026-09-03 11:23:36:2336 [31merror[39m: [31mBook already existed[39m
+2026-09-03 11:23:37:2337 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 11:23:37:2337 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 11:23:37:2337 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 11:25:05:255 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 11:25:05:255 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 11:25:05:255 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 11:25:05:255 [31merror[39m: [31mInvalid token[39m
+2026-09-03 11:25:05:255 [31merror[39m: [31mBook already existed[39m
+2026-09-03 11:25:06:256 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 11:25:06:256 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 11:25:07:257 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 14:25:46:2546 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 14:25:46:2546 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 14:25:46:2546 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 14:25:46:2546 [31merror[39m: [31mInvalid token[39m
+2026-09-03 14:25:46:2546 [31merror[39m: [31mBook already existed[39m
+2026-09-03 14:25:47:2547 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 14:25:47:2547 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 14:25:47:2547 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 14:56:09:569 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 14:56:09:569 [31merror[39m: [31mInvalid credentials[39m
+2026-09-03 14:56:09:569 [31merror[39m: [31mjwt malformed[39m
+2026-09-03 14:56:09:569 [31merror[39m: [31mInvalid token[39m
+2026-09-03 14:56:09:569 [31merror[39m: [31mBook already existed[39m
+2026-09-03 14:56:10:5610 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 14:56:10:5610 [31merror[39m: [31mBook does not exist[39m
+2026-09-03 14:56:10:5610 [31merror[39m: [31mBook does not exist[39m
