@@ -1,5 +1,5 @@
 import { Pool } from "pg"
-import type { User } from '../types/User.ts'
+import type { User, UserWithPassword } from '../types/User.ts'
 
 export const createUserRepository = (pool: Pool) => ({ 
     async createUser (email: string, password: string, role: string): Promise<User>{
@@ -15,13 +15,12 @@ export const createUserRepository = (pool: Pool) => ({
         return {
             id: row.id,
             email: row.email,
-            password: row.password,
             role: row.role,
             createdAt: row.created_at
         }
     },
 
-    async findUserByEmail (email: string): Promise<User | undefined> {
+    async findUserByEmail (email: string): Promise<UserWithPassword | undefined> {
 
         const result = await pool.query(
             `SELECT id, email, password, role, created_at

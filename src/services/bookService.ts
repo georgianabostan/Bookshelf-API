@@ -24,7 +24,7 @@ export const createBookService = (bookRepository: ReturnType<typeof createBookRe
         const listBooks = await bookRepository.getBooksByStatus(userId, status)
 
         if(listBooks === undefined){
-            return 'The list is empty'
+            return []
         }
         
         return listBooks
@@ -35,6 +35,10 @@ export const createBookService = (bookRepository: ReturnType<typeof createBookRe
 
         const book = await bookRepository.deleteBooksById(userId, id)
         
+        if (book === undefined) {
+            throw new Error('Book does not exist')
+        }
+
         return book
     },
 
@@ -44,7 +48,7 @@ export const createBookService = (bookRepository: ReturnType<typeof createBookRe
         const book = await bookRepository.updateBookbyStatusAndRating(userId, id, status, rating)
 
         if(book === undefined){
-            return 'Book does not exist'
+            throw new Error('Book does not exist')
         }
         
         return book
@@ -53,6 +57,12 @@ export const createBookService = (bookRepository: ReturnType<typeof createBookRe
     // update book cover
     async updateBookCover (userId: string, id: string, file: Express.Multer.File) {
 
+        const book = await bookRepository.findBookById(userId, id);
+
+        if (!book) {
+            throw new Error('Book does not exist')
+        }
+        
         const fileExtension = file.originalname.split('.').pop()
         
         const fileName = `${id}-${Date.now()}.${fileExtension}`
@@ -70,13 +80,8 @@ export const createBookService = (bookRepository: ReturnType<typeof createBookRe
         const { data } = supabase.storage
             .from('book-covers')
             .getPublicUrl(fileName) //obtine url-ul imaginii
-
-        const book = await bookRepository.updateBookOnCover(userId, id, data.publicUrl)
-
-        if(book === undefined){
-            return 'Book does not exist'
-        }
         
-        return book
+
+        return bookRepository.updateBookOnCover(userId, id, data.publicUrl)
     }
 })

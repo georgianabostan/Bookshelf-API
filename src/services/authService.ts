@@ -35,6 +35,11 @@ export const createUserService = (userRepository: ReturnType<typeof createUserRe
             throw new Error('Invalid credentials')
         }
 
-        return user
+        return {
+            id: user.id,
+            email: user.email,
+            role: user.role,
+            createdAt: user.createdAt,
+            };
     }
 })

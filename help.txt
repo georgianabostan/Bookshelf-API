@@ -1,4 +1,4 @@
-config/postgres.ts:
+1.
 import 'dotenv/config'
 import { Pool } from 'pg'
 
@@ -36,7 +36,7 @@ pool.on('error', (error) => {
 
 export default pool
 
-config/supabase:
+2.
 import 'dotenv/config'
 import { createClient } from '@supabase/supabase-js'
 
@@ -47,342 +47,281 @@ const supabase = createClient(
 
 export default supabase
 
-controllers/authController:
-import type {Request, Response} from 'express'
-import {registerUser, loginUser} from '../services/authService.ts'
-import {generateToken} from '../utils/jwt.ts'
+3.
+import type { Request, Response } from 'express'
+import type { createUserService } from '../services/authService.ts'
+import { generateToken } from '../utils/jwt.ts'
 import Logger from '../libs/logger.ts'
 
+export const createAuthController = (
+    authService: ReturnType<typeof createUserService>
+) => ({
 
-// register
-export const register = async (req: Request, res: Response) => {
+    register: async (req: Request, res: Response) => {
 
-    try {
-        // citeste req.body, adica citeste datele
-        const {email, password, role} = req.body
+        try {
 
-        // trimite datele catre serviciu
-        await registerUser(email, password, role)
+            const { email, password, role } = req.body
 
-        Logger.info(`User successfully registered: ${email}`)
+            await authService.registerUser(
+                email,
+                password,
+                role
+            )
 
-        // returneaza raspunsul
-        return res.status(201).json({
-            message: 'User registered successfully'
-        })
+            Logger.info(`User successfully registered: ${email}`)
 
-    } catch (error) {
+            return res.status(201).json({
+                message: 'User registered successfully'
+            })
 
-        Logger.error(error)
+        } catch (error) {
 
-        if (
-            error instanceof Error &&
-            error.message === 'Email already in use'
-        ) {
-            return res.status(400).json({
-                message: 'Email already in use'
+            Logger.error(error)
+
+            if (
+                error instanceof Error &&
+                error.message === 'Email already in use'
+            ) {
+                return res.status(400).json({
+                    message: 'Email already in use'
+                })
+            }
+
+            return res.status(500).json({
+                message: 'Internal server error'
             })
         }
+    },
 
-        return res.status(500).json({
-            message: 'Internal server error'
-        })
-    }
-}
+    login: async (req: Request, res: Response) => {
 
-// login
-export const login = async (req: Request, res: Response) => {
+        try {
 
-    try {
-        const {email, password} = req.body
+            const { email, password } = req.body
 
-        const user = await loginUser(email, password)
+            const user = await authService.loginUser(
+                email,
+                password
+            )
 
-        const token = generateToken({userId: user.id, role: user.role})
+            const token = generateToken({
+                userId: user.id,
+                role: user.role
+            })
 
-        return res.json({token})
+            return res.json({ token })
 
-    } catch (error) {
+        } catch (error) {
 
-        Logger.error(error)
+            Logger.error(error)
 
-        if (error instanceof Error && error.message === 'Invalid credentials') {
-            return res.status(401).json({
-                message: 'Invalid credentials'
+            if (
+                error instanceof Error &&
+                error.message === 'Invalid credentials'
+            ) {
+                return res.status(401).json({
+                    message: 'Invalid credentials'
+                })
+            }
+
+            return res.status(500).json({
+                message: 'Internal server error'
             })
         }
-
-        return res.status(500).json({
-            message: 'Internal server error'
-        })
     }
-}
+})
 
-controllers/booksController:
+4. 
 import type {Request, Response} from 'express'
-import {addBook, getListBooks, deleteBook, updateBook, updateBookCover} from '../services/bookService.ts'
+import type { createBookService } from '../services/bookService.ts'
 import Logger from '../libs/logger.ts'
 
+export const createBooksController = (
+    bookService: ReturnType<typeof createBookService>
+) => ({
+        
+    // add Book
+    async add (req: Request, res: Response){
 
-// add Book
-export const add = async (req: Request, res: Response) => {
+        try {
+            // citeste req.body, adica citeste datele
+            const {title, author, status, rating, cover_URL} = req.body
 
-    try {
-        // citeste req.body, adica citeste datele
-        const {title, author, status, rating, cover_URL} = req.body
+            // luam id-ul user-ului
+            const userId = req.user!.userId
 
-        // luam id-ul user-ului
-        const userId = req.user!.userId
+            // trimite datele catre serviciu
+            await bookService.addBook(userId, title, author, status, rating, cover_URL)
 
-        // trimite datele catre serviciu
-        await addBook(userId, title, author, status, rating, cover_URL)
+            Logger.info(`Book successfully added: ${title}`)
 
-        Logger.info(`Book successfully added: ${title}`)
+            // returneaza raspunsul
+            return res.status(201).json({
+                message: 'Book successfully added'
+            })
 
-        // returneaza raspunsul
-        return res.status(201).json({
-            message: 'Book successfully added'
-        })
+        } catch (error) {
 
-    } catch (error) {
+            Logger.error(error)
 
-        Logger.error(error)
+            if (
+                error instanceof Error &&
+                error.message === 'Book already existed'
+            ) {
+                return res.status(400).json({
+                    message: 'Book already existed'
+                })
+            }
 
-        if (
-            error instanceof Error &&
-            error.message === 'Book already existed'
-        ) {
-            return res.status(400).json({
-                message: 'Book already existed'
+            return res.status(500).json({
+                message: 'Internal server error'
             })
         }
+    },
 
-        return res.status(500).json({
-            message: 'Internal server error'
-        })
-    }
-}
+    // filter list books
+    async filter (req: Request, res: Response){
 
-// filter list books
-export const filter = async (req: Request, res: Response) => {
+        try {
+            // citeste req.query, adica citeste datele din url
+            const {status} = req.query
 
-    try {
-        // citeste req.query, adica citeste datele din url
-        const {status} = req.query
+            // luam id-ul user-ului
+            const userId = req.user!.userId
 
-        // luam id-ul user-ului
-        const userId = req.user!.userId
+            // trimite datele catre serviciu
+            const listBooks = await bookService.getListBooks(userId, status as string | undefined)
 
-        // trimite datele catre serviciu
-        const listBooks = await getListBooks(userId, status as string | undefined)
+            Logger.info(`Books successfully taken: ${status}`)
 
-        Logger.info(`Books successfully taken: ${status}`)
+            // returneaza raspunsul
+            return res.status(200).json({
+                message: 'Book successfully taken',
+                listBooks
+            })
 
-        // returneaza raspunsul
-        return res.status(200).json({
-            message: 'Book successfully taken',
-            listBooks
-        })
+        } catch (error) {
 
-    } catch (error) {
+            Logger.error(error)
 
-        Logger.error(error)
-
-        return res.status(500).json({
-            message: 'Internal server error'
-        })
-    }
-    
-}
-
-// delete book
-export const deleteId = async (req: Request, res: Response) => {
-
-    try {
-        // citeste req.params, adica citeste datele din url (e dat direct ca cale)
-        const { id } = req.params
-
-        // luam id-ul user-ului
-        const userId = req.user!.userId
-
-        // trimite datele catre serviciu
-        const listBooks = await deleteBook(userId, id as string)
-
-        Logger.info(`Book successfully delete: ${listBooks}`)
-
-        // returneaza raspunsul
-        return res.status(200).json({
-            message: 'Book successfully delete'
-        })
-
-    } catch (error) {
-
-        Logger.error(error)
-
-        return res.status(500).json({
-            message: 'Internal server error'
-        })
-    }
-    
-}
-
-// update book
-export const update = async (req: Request, res: Response) => {
-
-    try {
-        // citeste req.params, adica citeste datele din url (e dat direct ca cale)
-        const { id } = req.params
-
-        const {status, rating} = req.body
-        
-        // luam id-ul user-ului
-        const userId = req.user!.userId
-
-        // trimite datele catre serviciu
-        const listBooks = await updateBook(userId, id as string, status as string, rating as number)
-
-        Logger.info(`Book successfully update: ${listBooks}`)
-
-        // returneaza raspunsul
-        return res.status(200).json({
-            message: 'Book successfully update'
-        })
-
-    } catch (error) {
-
-        Logger.error(error)
-
-        return res.status(500).json({
-            message: 'Internal server error'
-        })
-    }
-    
-}
-
-// update book cover
-export const uploadCover = async (req: Request, res: Response) => {
-    
-    try {
-        // citeste req.params, adica citeste datele din url (e dat direct ca cale)
-        const { id } = req.params
-        
-        // luam id-ul user-ului
-        const userId = req.user!.userId
-
-        if (!req.file) {
-            return res.status(400).json({
-                message: 'Cover image is required'
+            return res.status(500).json({
+                message: 'Internal server error'
             })
         }
+        
+    },
 
-        // trimite datele catre serviciu
-        const book = await updateBookCover(userId, id as string, req.file)
+    // delete book
+    async deleteId(req: Request, res: Response) {
 
-        if (book === 'Book does not exist') {
-            return res.status(404).json({
-                message: 'Book does not exist'
+        try {
+            // citeste req.params, adica citeste datele din url (e dat direct ca cale)
+            const { id } = req.params
+
+            // luam id-ul user-ului
+            const userId = req.user!.userId
+
+            // trimite datele catre serviciu
+            const listBooks = await bookService.deleteBook(userId, id as string)
+
+            Logger.info(`Book successfully delete: ${listBooks}`)
+
+            // returneaza raspunsul
+            return res.status(200).json({
+                message: 'Book successfully delete'
+            })
+
+        } catch (error) {
+
+            Logger.error(error)
+
+            return res.status(500).json({
+                message: 'Internal server error'
             })
         }
-
-        Logger.info(`Book cover successfully uploaded: ${id}`)
         
-        // returneaza raspunsul
-        return res.status(200).json({
-            message: 'Book successfully update cover'
-        })
+    },
 
-    } catch (error) {
+    // update book
+    async update (req: Request, res: Response) {
 
-        Logger.error(error)
+        try {
+            // citeste req.params, adica citeste datele din url (e dat direct ca cale)
+            const { id } = req.params
 
-        return res.status(500).json({
-            message: 'Internal server error'
-        })
+            const {status, rating} = req.body
+            
+            // luam id-ul user-ului
+            const userId = req.user!.userId
+
+            // trimite datele catre serviciu
+            const listBooks = await bookService.updateBook(userId, id as string, status as string, rating as number)
+
+            Logger.info(`Book successfully update: ${listBooks}`)
+
+            // returneaza raspunsul
+            return res.status(200).json({
+                message: 'Book successfully update'
+            })
+
+        } catch (error) {
+
+            Logger.error(error)
+
+            return res.status(500).json({
+                message: 'Internal server error'
+            })
+        }
+        
+    },
+
+    // update book cover
+    async uploadCover (req: Request, res: Response) {
+        
+        try {
+            // citeste req.params, adica citeste datele din url (e dat direct ca cale)
+            const { id } = req.params
+            
+            // luam id-ul user-ului
+            const userId = req.user!.userId
+
+            if (!req.file) {
+                return res.status(400).json({
+                    message: 'Cover image is required'
+                })
+            }
+
+            // trimite datele catre serviciu
+            const book = await bookService.updateBookCover(userId, id as string, req.file)
+
+            if (book === 'Book does not exist') {
+                return res.status(404).json({
+                    message: 'Book does not exist'
+                })
+            }
+
+            Logger.info(`Book cover successfully uploaded: ${id}`)
+            
+            // returneaza raspunsul
+            return res.status(200).json({
+                message: 'Book successfully update cover'
+            })
+
+        } catch (error) {
+
+            Logger.error(error)
+
+            return res.status(500).json({
+                message: 'Internal server error'
+            })
+        }
+        
     }
-    
-}
+})
 
-
-libs/logger:
-import winston from 'winston';
-
-// Define your severity levels.
-// With them, You can create log files,
-// see or hide levels based on the running ENV.
-const levels = {
-  error: 0,
-  warn: 1,
-  info: 2,
-  http: 3,
-  debug: 4,
-};
-
-// This method set the current severity based on
-// the current NODE_ENV: show all the log levels
-// if the server was run in development mode; otherwise,
-// if it was run in production, show only warn and error messages.
-const level = () => {
-  const env = process.env.NODE_ENV || 'development';
-  const isDevelopment = env === 'development';
-  return isDevelopment ? 'debug' : 'warn';
-};
-
-// Define different colors for each level.
-// Colors make the log message more visible,
-// adding the ability to focus or ignore messages.
-const colors = {
-  error: 'red',
-  warn: 'yellow',
-  info: 'green',
-  http: 'magenta',
-  debug: 'white',
-};
-
-// Tell winston that you want to link the colors
-// defined above to the severity levels.
-winston.addColors(colors);
-
-// Chose the aspect of your log customizing the log format.
-const format = winston.format.combine(
-  // Add the message timestamp with the preferred format
-  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
-  // Tell Winston that the logs must be colored
-  winston.format.colorize({ all: true }),
-  // Define the format of the message showing the timestamp, the level and the message
-  winston.format.printf(
-    (info) => `${info.timestamp} ${info.level}: ${info.message}`,
-  ),
-);
-
-// Define which transports the logger must use to print out messages.
-// In this example, we are using three different transports
-const transports = [
-  // Allow the use the console to print the messages
-  new winston.transports.Console(),
-  // Allow to print all the error level messages inside the error.log file
-  new winston.transports.File({
-    filename: 'logs/error.log',
-    level: 'error',
-  }),
-  // Allow to print all the error message inside the all.log file
-  // (also the error log that are also printed inside the error.log(
-  new winston.transports.File({ filename: 'logs/all.log' }),
-];
-
-// Create the logger instance that has to be exported
-// and used to log messages.
-const Logger = winston.createLogger({
-  level: level(),
-  levels,
-  format,
-  transports,
-});
-
-export default Logger;
-
-
-middleware/authMiddleware
-import {type Request, type Response, type NextFunction, application} from 'express'
+5.
+import {type Request, type Response, type NextFunction} from 'express'
 import { verifyToken } from '../utils/jwt.ts'
 import Logger from '../libs/logger.ts'
 
@@ -412,7 +351,7 @@ export const authenticateJWT = (req: Request, res: Response, next: NextFunction)
     }
 }
 
-middleware/errorMiddleware
+6.
 import type {Request, Response, NextFunction} from 'express'
 
 import Logger from '../libs/logger.ts'
@@ -430,7 +369,7 @@ export const errorHandler = (error: unknown,req: Request,res: Response,next: Nex
     })
 }
 
-middleware/roleMiddleware
+7.
 import {type Request,type Response,type NextFunction} from 'express'
 
 export const authorizeRole = (role: string) => {
@@ -450,7 +389,7 @@ export const authorizeRole = (role: string) => {
     }
 }
 
-middleware/uploadMiddleware
+8.
 import multer from 'multer'
 
 const storage = multer.memoryStorage() //ca sa salvam in RAM
@@ -470,7 +409,7 @@ export const upload = multer({
     }
 })
 
-middleware/validateMiddleware
+9.
 import type { Request, Response, NextFunction } from 'express'
 import type { ZodSchema } from 'zod'
 
@@ -509,8 +448,8 @@ export const validate = (
 }
 
 
-repository/bookRepository:
- import { Pool } from 'pg'
+10.
+import { Pool } from 'pg'
 import type { Book } from '../types/Book.ts'
 
 export const createBookRepository = (pool: Pool) => ({
@@ -522,7 +461,7 @@ export const createBookRepository = (pool: Pool) => ({
         author: string,
         status: string,
         rating: number,
-        cover_url: string
+        cover_url?: string
     ): Promise<Book> {
 
         const result = await pool.query(
@@ -784,9 +723,7 @@ export const createBookRepository = (pool: Pool) => ({
     }
 })
 
-
-
-repository/userRepository
+11.
 import { Pool } from "pg"
 import type { User } from '../types/User.ts'
 
@@ -835,55 +772,59 @@ export const createUserRepository = (pool: Pool) => ({
     }
 })
 
-routes/authRoutes
+12.
 import { Router } from 'express'
-
-import {register, login} from '../controllers/authController.ts'
 import {validate} from '../middleware/validateMiddleware.ts'
+import type { createAuthController } from '../controllers/authController.ts'
 import {registerSchema,loginSchema} from '../schemas/authSchemas.ts'
 
-const router = Router()
+export const createAuthRoutes = (authController: ReturnType<typeof createAuthController>) => {
 
-// URL + middleware + controller
-router.post('/register',validate(registerSchema, "body"),register)
-router.post('/login',validate(loginSchema, "body"),login)
+    const router = Router()
+
+    // URL + middleware + controller
+    router.post('/register',validate(registerSchema, "body"),authController.register)
+    router.post('/login',validate(loginSchema, "body"),authController.login)
 
 
-export default router
+    return router
+}
 
-routes/bookRoutes
+13.
 import { Router } from 'express'
 import { authenticateJWT } from '../middleware/authMiddleware.ts'
 
-import {add, filter, deleteId, update, uploadCover} from '../controllers/booksController.ts'
+import { createBooksController } from '../controllers/booksController.ts'
 import {validate} from '../middleware/validateMiddleware.ts'
-import {addBookSchema, getBooksSchema, deleteBooksSchema, updateBooksSchema} from '../schemas/booksSchemas.ts'
+import {addBookSchema, getBooksSchema, deleteBooksSchema, updateBookParamsSchema, updateBookBodySchema } from '../schemas/booksSchemas.ts'
 import {upload} from '../middleware/uploadMiddleware.ts'
 
-const router = Router()
+export const createBooksRoutes = (booksController: ReturnType<typeof createBooksController>) => {
 
-// URL + middleware + controller
+    const router = Router()
 
-// POST /books
-router.post('/books', authenticateJWT, validate(addBookSchema, "body"), add)
+    // URL + middleware + controller
 
-// GET /books (by status?)
-router.get('/books', authenticateJWT, validate(getBooksSchema, "query"), filter)
+    // POST /books
+    router.post('/books', authenticateJWT, validate(addBookSchema, "body"), booksController.add)
 
-// DELETE /books/:id
-router.delete('/books/:id', authenticateJWT, validate(deleteBooksSchema, "params"), deleteId)
+    // GET /books (by status?)
+    router.get('/books', authenticateJWT, validate(getBooksSchema, "query"), booksController.filter)
 
-// PATCH /books/:id
-router.patch('/books/:id', authenticateJWT, validate(updateBooksSchema, "params"), update)
-// and query
+    // DELETE /books/:id
+    router.delete('/books/:id', authenticateJWT, validate(deleteBooksSchema, "params"), booksController.deleteId)
 
-// POST /books/:id/cover
-router.post('/books/:id/cover', authenticateJWT, upload.single('image'), uploadCover)
+    // PATCH /books/:id
+    router.patch('/books/:id', authenticateJWT, validate(updateBookParamsSchema, "params"), validate(updateBookBodySchema, 'body'), booksController.update)
+    // and query
 
-export default router
+    // POST /books/:id/cover
+    router.post('/books/:id/cover', authenticateJWT, upload.single('image'), booksController.uploadCover)
 
+    return router
+}
 
-routes/protectedRoutes
+14.
 import { Router, type Request, type Response } from 'express'
 
 import {authenticateJWT} from '../middleware/authMiddleware.ts'
@@ -909,8 +850,8 @@ router.get('/admin',authenticateJWT,authorizeRole('admin'),(req: Request,res: Re
 export default router
 
 
-schemas/authSchemas
-import { jwt, z } from 'zod'
+15.
+import { z } from 'zod'
 
 export const registerSchema = z.object({
     email: z
@@ -918,11 +859,13 @@ export const registerSchema = z.object({
         .email('Invalid email address'),
 
     password: z
-        .enum(['user', 'admin']),
+        .string()
+        .min(6, 'Password must contain at least 6 characters'),
 
     role: z
-        .string()
-        .min(1, 'Role is required')
+        .enum(['user', 'admin'])
+        .default('user')
+        
 })
 
 export const loginSchema = z.object({
@@ -935,7 +878,7 @@ export const loginSchema = z.object({
         .min(1, 'Password is required')
 })
 
-schemas/booksSchemas
+16.
 import { z } from 'zod'
 
 export const addBookSchema = z.object({
@@ -970,9 +913,11 @@ export const deleteBooksSchema = z.object({
         .string().uuid()
 })
 
-export const updateBooksSchema = z.object({
-    id: z
-        .string().uuid(),
+export const updateBookParamsSchema = z.object({
+    id: z.string().uuid()
+})
+
+export const updateBookBodySchema = z.object({
     status: z
         .enum(['want', 'reading', 'done'])
         .optional(),
@@ -982,13 +927,12 @@ export const updateBooksSchema = z.object({
         .int()
         .min(0)
         .max(5)
-        .default(0)
         .optional()
 })
 // title, author, status, rating, cover_URL
 
 
-services/authService
+17.
 import bcrypt from 'bcryptjs'
 
 import { createUserRepository } from '../repositories/userRepository.ts'
@@ -1030,14 +974,14 @@ export const createUserService = (userRepository: ReturnType<typeof createUserRe
     }
 })
 
-services/bookService
-import supabase from '../config/supabase.ts'
+18.
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { createBookRepository } from '../repositories/bookRepository.ts'
 
-export const createBookService = (bookRepository: ReturnType<typeof createBookRepository>) => ({
+export const createBookService = (bookRepository: ReturnType<typeof createBookRepository>, supabase: SupabaseClient) => ({
 
 // add book
-    async addBook (userId: string, title: string, author: string, status: string, rating: number, cover_url: string) {
+    async addBook (userId: string, title: string, author: string, status: string, rating: number, cover_url?: string) {
 
 
         const existingBook = await bookRepository.findBookByTitleAndAuthor(userId, title, author)
@@ -1114,7 +1058,8 @@ export const createBookService = (bookRepository: ReturnType<typeof createBookRe
     }
 })
 
-types/Book
+
+19.
 export interface Book {
     id: string,
     id_user: string,
@@ -1126,7 +1071,8 @@ export interface Book {
 }
 
 
-type/express.d.ts 
+
+20.
 import type { UserPayload } from '../utils/jwt.ts'
 
 declare global {
@@ -1139,7 +1085,7 @@ declare global {
 
 export {}
 
-type/User
+21.
 export interface User {
     id: string,
     email: string,
@@ -1148,7 +1094,8 @@ export interface User {
     createdAt: Date
 }
 
-utils/jwt
+
+22.
 // utils/jwt
 import 'dotenv/config'
 import jwt from 'jsonwebtoken'
@@ -1189,24 +1136,49 @@ export const verifyToken = (token: string): UserPayload => {
     }
 }
 
-app 
+23.
 import express from 'express'
-import authRoutes from './routes/authRoutes.ts'
-import booksRoutes from './routes/bookRoutes.ts'
-import protectedRoutes from './routes/protectedRoutes.ts'
-import {errorHandler} from './middleware/errorMiddleware.ts'
 
+import pool from './config/postgres.ts'
+import supabase from './config/supabase.ts'
+
+import { createUserRepository } from './repositories/userRepository.ts'
+import { createBookRepository } from './repositories/bookRepository.ts'
+
+import { createUserService } from './services/authService.ts'
+import { createBookService } from './services/bookService.ts'
+
+import { createAuthController } from './controllers/authController.ts'
+import { createBooksController } from './controllers/booksController.ts'
+
+import { createAuthRoutes } from './routes/authRoutes.ts'
+import { createBooksRoutes } from './routes/bookRoutes.ts'
+
+import protectedRoutes from './routes/protectedRoutes.ts'
+import { errorHandler } from './middleware/errorMiddleware.ts'
 // instanta express
 const app = express()
 
 app.use(express.json())
 
+// repositories
+const userRepository = createUserRepository(pool)
+const bookRepository = createBookRepository(pool)
+
+// services
+const authService = createUserService(userRepository)
+const bookService = createBookService(bookRepository, supabase)
+
+// controllers
+const authController = createAuthController(authService)
+const booksController = createBooksController(bookService)
+
 // rutele
-app.use('/auth',authRoutes)
+app.use('/auth', createAuthRoutes(authController))
 
 app.use('/protected',protectedRoutes)
 
-app.use(booksRoutes)
+app.use(createBooksRoutes(booksController))
 
 // middleware
 app.use(errorHandler)
@@ -1215,7 +1187,7 @@ app.use(errorHandler)
 
 export default app
 
-server
+24.
 import 'dotenv/config'
 
 import app from './app.ts'
@@ -1243,4 +1215,3 @@ const startServer = async () => {
 }
 
 startServer()
-

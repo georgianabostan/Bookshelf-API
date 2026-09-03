@@ -38,3 +38,5 @@
 2026-09-01 14:34:45:3445 [31merror[39m: [31minvalid input syntax for type boolean: "done"[39m
 2026-09-01 21:14:25:1425 [31merror[39m: [31mnew row violates row-level security policy[39m
 2026-09-02 15:41:09:419 [31merror[39m: [31mBook already existed[39m
+2026-09-02 20:48:08:488 [31merror[39m: [31mjwt expired[39m
+2026-09-02 20:48:08:488 [31merror[39m: [31mInvalid token[39m

@@ -22,7 +22,7 @@ export const authenticateJWT = (req: Request, res: Response, next: NextFunction)
     } catch (error) {
 
         Logger.error(error)
-        return res.status(403).json({
+        return res.status(401).json({
             message: 'Invalid or expired token'
         })
     }

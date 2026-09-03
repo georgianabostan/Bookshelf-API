@@ -1,7 +1,10 @@
 export interface User {
-    id: string,
-    email: string,
-    password: string,
-    role: string
-    createdAt: Date
+  id: string;
+  email: string;
+  role: string;
+  createdAt: Date;
+}
+
+export interface UserWithPassword extends User {
+  password: string;
 }
