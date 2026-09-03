@@ -1,44 +1,165 @@
 # Bookshelf-API
 
-# instalare
-- mergi pe pagina oficiala Node.js si instaleaza de acolo
+API REST pentru gestionarea unei biblioteci personale. Proiectul foloseste Node.js, Express, TypeScript, PostgreSQL, Supabase, JWT si Zod.
 
-- creaza un packet json cu comanda: npm init -y
-inlocuieste "type" cu  "type": "module",
+## Tehnologii
 
-- npm i nodemon
+* Node.js
+* TypeScript
+* Express
+* PostgreSQL
+* Supabase
+* JWT
+* Zod
+* Vitest
+* Supertest
+* Multer
+* Winston
+* express-rate-limit
 
-- npm i express
+## Instalare
 
-//// npm run dev
+### 1. Instalare Node.js
 
-- npm i pg
+Instaleaza Node.js de pe site-ul oficial.
 
-- npm i --save-dev @types/pg
-- npm install --save @types/express
+Verifica instalarea:
 
-- npm install dotenv
+```bash
+node -v
+npm -v
+```
 
-//jwt
-- npm install --save-dev @types/jsonwebtoken @types/bcryptjs
+### 2. Instalare dependente
 
-- npm i winston
+Dupa clonarea proiectului, intra in folderul proiectului si ruleaza:
 
-- npm i bcryptjs
+```bash
+npm install
+```
 
-- npm i jsonwebtoken
+### 3. Configurarea variabilelor de mediu
 
-- npm install zod
+Creeaza un fisier `.env` in folderul principal al proiectului.
 
-npm install multer
-npm install -D @types/multer
+Exemplu:
 
-npm install @supabase/supabase-js multer
-npm install -D @types/multer
+```env
+PORT=8000
+NODE_ENV=development
 
-- npm install supertest @types/supertest --save-dev
+JWT_SECRET=your-secret-key
 
-- npm install -D vitest supertest @types/supertest
+POSTGRES_HOST=your-postgres-host
+POSTGRES_PORT=5432
+POSTGRES_DATABASE=postgres
+POSTGRES_USER=your-postgres-user
+POSTGRES_PASSWORD=your-postgres-password
 
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SECRET_KEY=your-supabase-secret-key
+```
 
-- npm install express-rate-limit
+Nu publica fisierul `.env` in repository.
+
+## Supabase
+
+Proiectul foloseste Supabase pentru PostgreSQL si pentru storage-ul imaginilor copertilor.
+
+### Varianta folosita in proiect
+
+Pentru rularea proiectului se poate folosi un proiect Supabase existent.
+
+Din dashboard-ul Supabase se obtin:
+
+* `SUPABASE_URL`
+* `SUPABASE_SECRET_KEY`
+* datele de conectare PostgreSQL
+
+Aceste valori trebuie adaugate in fisierul `.env`.
+
+### Supabase local
+
+Daca vrei sa rulezi Supabase local, ai nevoie de Supabase CLI si Docker.
+
+Dupa instalarea acestora, din folderul proiectului ruleaza:
+
+```bash
+supabase init
+```
+
+Apoi:
+
+```bash
+supabase start
+```
+
+Comanda porneste serviciile Supabase local.
+
+Pentru oprirea serviciilor:
+
+```bash
+supabase stop
+```
+
+Dupa pornirea Supabase local, foloseste valorile afisate de CLI pentru configurarea variabilelor PostgreSQL si Supabase din `.env`.
+
+## Pornirea API-ului
+
+Pentru pornirea serverului in development:
+
+```bash
+npm run dev
+```
+
+API-ul va fi disponibil la:
+
+```text
+http://localhost:8000
+```
+
+Portul poate fi modificat din variabila:
+
+```env
+PORT=8000
+```
+
+## Testare
+
+Pentru rularea testelor:
+
+```bash
+npm test
+```
+
+Testele folosesc Vitest si Supertest.
+
+## Functionalitati
+
+API-ul permite:
+
+* inregistrarea utilizatorilor
+* autentificare cu JWT
+* controlul accesului pe baza rolului
+* adaugarea cartilor
+* listarea cartilor
+* filtrarea cartilor dupa status
+* paginare
+* sortare dupa titlu, autor, status sau rating
+* actualizarea cartilor
+* stergerea cartilor
+* upload pentru coperti
+* validarea datelor cu Zod
+* rate limiting pentru autentificare
+* izolarea cartilor intre utilizatori
+
+## Securitate
+
+* parolele sunt hash-uite cu bcrypt
+* autentificarea foloseste JWT
+* query-urile PostgreSQL folosesc parametri
+* utilizatorii pot accesa doar propriile carti
+* datele primite sunt validate cu Zod
+* endpoint-urile de autentificare au rate limiting
+* fisierele uploadate sunt validate dupa tip si dimensiune
+* datele sensibile nu trebuie salvate in repository
