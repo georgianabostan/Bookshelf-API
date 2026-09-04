@@ -106,6 +106,8 @@ export const createBookRepository = (pool: Pool) => ({
     ): Promise<Book[] | undefined> {
 
         const offset = (page - 1) * limit
+        
+        // pt sortare
         const allowedSortFields: Record<string, string> = {
             title: 'title',
             author: 'author',

@@ -17,7 +17,8 @@
   "scripts": {
     "start": "node server",
     "dev": "node --watch --env-file=.env src/server.ts",
-    "test": "vitest"
+    "test": "vitest",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.4",
@@ -33,11 +34,13 @@
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.2.0",
     "@types/pg": "^8.23.1",
     "@types/supertest": "^7.2.1",
+    "eslint": "^10.9.1",
     "supertest": "^7.2.2",
     "vitest": "^4.1.11"
   }

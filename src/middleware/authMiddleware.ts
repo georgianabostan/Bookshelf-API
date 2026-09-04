@@ -6,6 +6,7 @@ import Logger from '../libs/logger.ts'
 
 export const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
 
+    // Bearer eyJhbGciOiJIUzI1...
     const token = req.headers.authorization?.split(' ')[1]
 
     if (!token) {
